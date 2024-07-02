@@ -1,9 +1,10 @@
 import { useState } from "react";
 
-import { Button, Image, ScrollView, Text, TextInput, View } from "react-native";
+import { Button, Image, ScrollView, Text, View } from "react-native";
 import { fetchAlbums } from "../services/SpotifyServices";
 import CustomSafeArea from "../components/CustomSafeArea";
 import { Item } from "../types/song";
+import { TextInput } from "../components/text-input";
 
 export default function HomeScreen() {
   const [artist, setArtist] = useState<string>("");
@@ -20,28 +21,18 @@ export default function HomeScreen() {
   }
 
   return (
-    <CustomSafeArea className="flex flex-col flex-1 px-4 pt-10 items-center justify-start bg-slate-400 dark:bg-neutral-900">
+    <CustomSafeArea className="flex flex-col flex-1 px-4 pt-10 items-center justify-start bg-slate-400 dark:bg-neutral-900 dark:text-neutral-50">
       <TextInput
-        className="bg-white dark:bg-neutral-900 border border-black dark:border-white rounded-sm"
-        placeholder="Artist"
+        className="border border-black/20 dark:border-white/20 dark:bg-neutral-900 dark:text-neutral-50 mb-4"
         value={artist}
         onChangeText={setArtist}
-        style={{
-          width: "80%",
-          padding: 10,
-          marginBottom: 10,
-        }}
+        placeholder="Taylor Swift, Drake, etc..."
       />
       <TextInput
-        placeholder="Album"
+        className="border border-black/20 dark:border-white/20 dark:bg-neutral-900 dark:text-neutral-50 mb-4"
         value={album}
         onChangeText={setAlbum}
-        style={{
-          width: "80%",
-          padding: 10,
-          backgroundColor: "white",
-          marginBottom: 10,
-        }}
+        placeholder="Lover, Scorpion, etc..."
       />
       <Button title="Search" onPress={getAlbums} />
       <ScrollView className="flex flex-1 w-full">

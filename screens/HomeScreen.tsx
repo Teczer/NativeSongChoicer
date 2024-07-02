@@ -22,14 +22,21 @@ export default function HomeScreen() {
 
   return (
     <CustomSafeArea className="flex flex-col flex-1 px-4 pt-10 items-center justify-start bg-slate-400 dark:bg-neutral-900 dark:text-neutral-50">
+      <Image
+        blurRadius={30}
+        className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
+        source={{
+          uri: "https://i.scdn.co/image/ab67616d0000b27329937008eb9e06df2fd3d49b",
+        }}
+      />
       <TextInput
-        className="border border-black/20 dark:border-white/20 dark:bg-neutral-900 dark:text-neutral-50 mb-4"
+        className="border bg-transparent border-black/30 dark:border-white/30  dark:text-neutral-50 mb-4"
         value={artist}
         onChangeText={setArtist}
         placeholder="Taylor Swift, Drake, etc..."
       />
       <TextInput
-        className="border border-black/20 dark:border-white/20 dark:bg-neutral-900 dark:text-neutral-50 mb-4"
+        className="border bg-transparent border-black/30 dark:border-white/30  dark:text-neutral-50 mb-4"
         value={album}
         onChangeText={setAlbum}
         placeholder="Lover, Scorpion, etc..."

@@ -1,10 +1,11 @@
 import { Platform, SafeAreaView, View } from "react-native";
 
 interface Props {
-  style: any;
+  style?: any;
   children: React.ReactNode;
   onlyBottom?: boolean;
   onlyTop?: boolean;
+  className?: string; // Ajout de la propriété className
 }
 
 export default function CustomSafeArea({

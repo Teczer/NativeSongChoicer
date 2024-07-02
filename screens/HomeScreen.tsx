@@ -1,15 +1,74 @@
-import { Text } from "react-native";
+import { useState } from "react";
+
+import { Button, Image, ScrollView, Text, TextInput, View } from "react-native";
+import { fetchAlbums } from "../services/SpotifyServices";
 import CustomSafeArea from "../components/CustomSafeArea";
+import { Item } from "../types/song";
 
 export default function HomeScreen() {
+  const [artist, setArtist] = useState<string>("");
+  const [album, setAlbum] = useState<string>("");
+  const [data, setData] = useState<null | Item[]>(null);
+
+  async function getAlbums() {
+    try {
+      const response = await fetchAlbums(artist, album);
+      setData(response.albums.items);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
   return (
-    <CustomSafeArea className="flex flex-col flex-1 items-center justify-start gap-4 bg-slate-400 dark:bg-neutral-900">
-      <Text className="text-4xl font-bold text-center dark:text-white">
-        Welcome to Song Choicer!
-      </Text>
-      <Text className="w-4/5 text-lg text-center dark:text-white">
-        Make a ranking of songs of an album easily and share it !
-      </Text>
+    <CustomSafeArea className="flex flex-col flex-1 px-4 pt-10 items-center justify-start bg-slate-400 dark:bg-neutral-900">
+      <TextInput
+        className="bg-white dark:bg-neutral-900 border border-black dark:border-white rounded-sm"
+        placeholder="Artist"
+        value={artist}
+        onChangeText={setArtist}
+        style={{
+          width: "80%",
+          padding: 10,
+          marginBottom: 10,
+        }}
+      />
+      <TextInput
+        placeholder="Album"
+        value={album}
+        onChangeText={setAlbum}
+        style={{
+          width: "80%",
+          padding: 10,
+          backgroundColor: "white",
+          marginBottom: 10,
+        }}
+      />
+      <Button title="Search" onPress={getAlbums} />
+      <ScrollView className="flex flex-1 w-full">
+        {data &&
+          data.map((album) => {
+            const formattedRealeaseDate = album.release_date.split("-")[0];
+            const formattedAlbumType =
+              album.type.charAt(0).toUpperCase() + album.type.slice(1);
+
+            return (
+              <View className="flex flex-row w-full mb-4" key={album.id}>
+                <Image
+                  className="w-2/5 h-40 rounded-sm"
+                  source={{ uri: album?.images[0]?.url }}
+                />
+                <View className="w-3/5 flex flex-col justify-center items-center pl-3">
+                  <Text className="w-full h-auto mb-2 text-start font-bold text-dark dark:text-white">
+                    {album.name}
+                  </Text>
+                  <Text className="w-full text-dark dark:text-neutral-300">
+                    {formattedRealeaseDate} • {formattedAlbumType}
+                  </Text>
+                </View>
+              </View>
+            );
+          })}
+      </ScrollView>
     </CustomSafeArea>
   );
 }

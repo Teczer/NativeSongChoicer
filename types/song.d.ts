@@ -1,8 +1,8 @@
-export interface RootObject {
+interface RootObject {
   albums: Albums;
 }
 
-export interface Albums {
+interface Albums {
   href: string;
   items: Item[];
   limit: number;
@@ -12,7 +12,7 @@ export interface Albums {
   total: number;
 }
 
-export interface Item {
+interface Item {
   album_type: string;
   artists: Artist[];
   available_markets: string[];
@@ -28,13 +28,13 @@ export interface Item {
   uri: string;
 }
 
-export interface Image {
+interface Image {
   height: number;
   url: string;
   width: number;
 }
 
-export interface Artist {
+interface Artist {
   external_urls: Externalurls;
   href: string;
   id: string;
@@ -43,6 +43,6 @@ export interface Artist {
   uri: string;
 }
 
-export interface Externalurls {
+interface Externalurls {
   spotify: string;
 }

@@ -1,23 +1,59 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import useDebounce from "../hooks/useDebounce";
 
-import { Button, Image, ScrollView, Text, View } from "react-native";
+import { useQuery } from "react-query";
+import { useBackgroundImage } from "../store/useBackgroundImage";
+import { useColorScheme } from "nativewind";
+
 import { fetchAlbums } from "../services/SpotifyServices";
-import CustomSafeArea from "../components/CustomSafeArea";
-import { Item } from "../types/song";
+
+import {
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { TextInput } from "../components/text-input";
+import CustomSafeArea from "../components/CustomSafeArea";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function HomeScreen() {
   const [artist, setArtist] = useState<string>("");
   const [album, setAlbum] = useState<string>("");
-  const [data, setData] = useState<null | Item[]>(null);
+  const { colorScheme } = useColorScheme();
 
-  async function getAlbums() {
-    try {
-      const response = await fetchAlbums(artist, album);
-      setData(response.albums.items);
-    } catch (error) {
-      console.log("error", error);
-    }
+  const { image, setImage } = useBackgroundImage();
+
+  const debouncedQuery = useDebounce([artist, album], 500);
+
+  const {
+    data: results,
+    isLoading,
+    isError,
+  } = useQuery<Item[] | undefined>({
+    queryKey: ["albums", ...debouncedQuery],
+    queryFn: async () => {
+      if (debouncedQuery[0] || debouncedQuery[1]) {
+        const response = await fetchAlbums(
+          debouncedQuery[0],
+          debouncedQuery[1]
+        );
+        return response.albums.items;
+      }
+    },
+    enabled: Boolean(debouncedQuery[0]) || Boolean(debouncedQuery[1]),
+  });
+
+  const filteredAlbums = useMemo(() => {
+    return results?.filter((item) =>
+      item.name.toLowerCase().includes(album.toLowerCase())
+    );
+  }, [results, album]);
+
+  if (isError) {
+    return <Text>Error</Text>;
   }
 
   return (
@@ -26,41 +62,54 @@ export default function HomeScreen() {
         blurRadius={30}
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
         source={{
-          uri: "https://i.scdn.co/image/ab67616d0000b27329937008eb9e06df2fd3d49b",
+          uri:
+            image ||
+            "https://www.rover.com/blog/wp-content/uploads/white-cat-min-960x540.jpg",
         }}
       />
       <TextInput
-        className="border bg-transparent border-black/30 dark:border-white/30  dark:text-neutral-50 mb-4"
+        className="border-2 bg-transparent border-black/30 dark:border-white/30 dark:text-neutral-50 mb-4"
         value={artist}
         onChangeText={setArtist}
         placeholder="Taylor Swift, Drake, etc..."
       />
       <TextInput
-        className="border bg-transparent border-black/30 dark:border-white/30  dark:text-neutral-50 mb-4"
+        className="border-2 bg-transparent border-black/30 dark:border-white/30 dark:text-neutral-50 mb-10"
         value={album}
         onChangeText={setAlbum}
         placeholder="Lover, Scorpion, etc..."
       />
-      <Button title="Search" onPress={getAlbums} />
       <ScrollView className="flex flex-1 w-full">
-        {data &&
-          data.map((album) => {
-            const formattedRealeaseDate = album.release_date.split("-")[0];
+        {isLoading && <ActivityIndicator size="large" color="white" />}
+        {filteredAlbums &&
+          filteredAlbums.map((album) => {
+            const formattedReleaseDate = album.release_date.split("-")[0];
             const formattedAlbumType =
               album.type.charAt(0).toUpperCase() + album.type.slice(1);
 
             return (
               <View className="flex flex-row w-full mb-4" key={album.id}>
                 <Image
-                  className="w-2/5 h-40 rounded-sm"
+                  className="w-2/5 h-40"
                   source={{ uri: album?.images[0]?.url }}
+                  borderRadius={10}
                 />
-                <View className="w-3/5 flex flex-col justify-center items-center pl-3">
-                  <Text className="w-full h-auto mb-2 text-start font-bold text-dark dark:text-white">
+                <View className="w-3/5 flex flex-col justify-center items-start pl-3">
+                  <TouchableOpacity
+                    className="absolute top-2 right-0 w-auto"
+                    onPress={() => setImage(album?.images[0]?.url)}
+                  >
+                    <MaterialCommunityIcons
+                      name="image-plus"
+                      size={28}
+                      color={colorScheme === "light" ? "black" : "white"}
+                    />
+                  </TouchableOpacity>
+                  <Text className="w-full h-auto mb-1 text-start font-bold text-dark dark:text-white">
                     {album.name}
                   </Text>
                   <Text className="w-full text-dark dark:text-neutral-300">
-                    {formattedRealeaseDate} • {formattedAlbumType}
+                    {formattedReleaseDate} • {formattedAlbumType}
                   </Text>
                 </View>
               </View>

@@ -1,3 +1,4 @@
+import { useColorScheme } from "nativewind";
 import { useState } from "react";
 import {
   TextInput as DefaultTextInput,
@@ -11,6 +12,7 @@ export const TextInput = ({
   ...props
 }: TextInputProps) => {
   const [isFocused, setIsFocused] = useState(false);
+  const { colorScheme } = useColorScheme();
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -31,7 +33,9 @@ export const TextInput = ({
         props.style,
       ]}
       placeholderTextColor={
-        placeholderTextColor || tailwind.color("text-neutral-500")
+        placeholderTextColor || colorScheme === "light"
+          ? tailwind.color("text-neutral-500")
+          : tailwind.color("text-neutral-300")
       }
     />
   );

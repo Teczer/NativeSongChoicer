@@ -20,7 +20,8 @@ export default function Navigation() {
             paddingTop: 5,
             paddingBottom: 5,
             height: 60,
-            backgroundColor: "#333",
+            backgroundColor: "#171717",
+            borderTopWidth: 0,
           },
         }}
       >

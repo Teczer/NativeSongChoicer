@@ -18,6 +18,7 @@ import {
 import { TextInput } from "../components/text-input";
 import CustomSafeArea from "../components/CustomSafeArea";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { getItem, setItem } from "../utils/AsyncStorage";
 
 export default function HomeScreen() {
   const [artist, setArtist] = useState<string>("");
@@ -51,6 +52,9 @@ export default function HomeScreen() {
       item.name.toLowerCase().includes(album.toLowerCase())
     );
   }, [results, album]);
+
+  const imageData = getItem("bg-image");
+  console.log("imageData", imageData);
 
   if (isError) {
     return <Text>Error</Text>;
@@ -97,7 +101,10 @@ export default function HomeScreen() {
                 <View className="w-3/5 flex flex-col justify-center items-start pl-3">
                   <TouchableOpacity
                     className="absolute top-2 right-0 w-auto"
-                    onPress={() => setImage(album?.images[0]?.url)}
+                    onPress={() => {
+                      setImage(album?.images[0]?.url);
+                      setItem("bg-image", album?.images[0]?.url);
+                    }}
                   >
                     <MaterialCommunityIcons
                       name="image-plus"

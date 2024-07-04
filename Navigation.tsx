@@ -8,6 +8,8 @@ import VersusScreen from "./screens/VersusScreen";
 
 import { Entypo } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
+import { Platform, StyleSheet } from "react-native";
+import { useColorScheme } from "nativewind";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -24,18 +26,45 @@ export default function Navigation() {
 }
 
 function MainTabs() {
+  const { colorScheme } = useColorScheme();
+
+  const styles = StyleSheet.create({
+    tabContainer: {
+      position: "absolute",
+      width: "90%",
+      borderRadius: 12,
+      left: "5%",
+      bottom: 20,
+      borderTopWidth: 0,
+      backgroundColor: colorScheme === "light" ? "#fff" : "#222",
+      height: 60,
+    },
+    label: {
+      textTransform: "capitalize",
+      fontSize: 12,
+    },
+  });
+
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "white",
-        tabBarStyle: {
-          paddingTop: 5,
-          paddingBottom: 5,
-          height: 60,
-          backgroundColor: "#171717",
-          borderTopWidth: 0,
+        tabBarActiveTintColor: colorScheme === "light" ? "#000" : "#fff",
+        tabBarStyle: [
+          styles.tabContainer,
+          Platform.OS === "ios" && {
+            shadowOffset: { height: -2, width: 2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 15,
+          },
+        ],
+        tabBarItemStyle: {
+          marginBottom: 7,
         },
+        tabBarInactiveTintColor: "#999",
+      }}
+      safeAreaInsets={{
+        bottom: 0,
       }}
     >
       <Tab.Screen
@@ -44,7 +73,13 @@ function MainTabs() {
         options={{
           tabBarLabel: "Home",
           tabBarIcon: ({ focused }) => (
-            <Entypo name="home" size={24} color={focused ? "white" : "#555"} />
+            <Entypo
+              name="home"
+              size={24}
+              color={
+                focused ? (colorScheme === "light" ? "#000" : "#fff") : "#999"
+              }
+            />
           ),
         }}
       />
@@ -57,7 +92,9 @@ function MainTabs() {
             <Fontisto
               name="player-settings"
               size={24}
-              color={focused ? "white" : "#555"}
+              color={
+                focused ? (colorScheme === "light" ? "#000" : "#fff") : "#999"
+              }
             />
           ),
         }}

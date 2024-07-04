@@ -1,20 +1,10 @@
-import { RouteProp } from "@react-navigation/native";
 import { useQuery } from "react-query";
 import CustomSafeArea from "../components/CustomSafeArea";
 import { Text } from "react-native";
 import { fetchAlbumTracks } from "../services/SpotifyServices";
 import { useMemo } from "react";
 
-type VersusScreenRouteProp = RouteProp<
-  { params: { albumId: string } },
-  "params"
->;
-
-export default function VersusScreen({
-  route,
-}: {
-  route: VersusScreenRouteProp;
-}) {
+export default function VersusScreen({ route }: NavigationProps) {
   const { albumId } = route.params;
 
   const {

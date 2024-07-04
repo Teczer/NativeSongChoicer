@@ -96,7 +96,7 @@ export default function HomeScreen({ navigation }: NavigationProps) {
         />
       </View>
       {/* SEARCH RESULTS */}
-      <ScrollView className="flex flex-1 w-full">
+      <ScrollView className="flex flex-1 w-full h-full mb-16">
         {isLoading && <ActivityIndicator size="large" color="white" />}
         {filteredAlbums &&
           filteredAlbums.map((album) => {

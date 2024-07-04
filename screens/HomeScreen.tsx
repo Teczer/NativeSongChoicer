@@ -20,6 +20,7 @@ import {
 import { TextInput } from "../components/text-input";
 import CustomSafeArea from "../components/CustomSafeArea";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import StepImage from "../components/StepImage";
 
 export default function HomeScreen({ navigation }: NavigationProps) {
   const [artist, setArtist] = useState<string>("");
@@ -95,6 +96,10 @@ export default function HomeScreen({ navigation }: NavigationProps) {
           placeholder="Lover, Scorpion, etc..."
         />
       </View>
+
+      {/* STEP IMAGE */}
+      {!isLoading && !filteredAlbums && <StepImage colorScheme={colorScheme} />}
+
       {/* SEARCH RESULTS */}
       <ScrollView className="flex flex-1 w-full h-full mb-16">
         {isLoading && <ActivityIndicator size="large" color="white" />}

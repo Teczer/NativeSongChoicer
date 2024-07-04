@@ -1,9 +1,12 @@
-import Navigation from "./Navigation";
-import * as Splashscreen from "expo-splash-screen";
-import { QueryClient, QueryClientProvider } from "react-query";
 import { useEffect } from "react";
-import { getItem } from "./utils/AsyncStorage";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { useColorScheme } from "nativewind";
+
+import * as Splashscreen from "expo-splash-screen";
+
+import { getItem } from "./utils/AsyncStorage";
+
+import Navigation from "./Navigation";
 
 const queryClient = new QueryClient();
 
@@ -12,16 +15,12 @@ Splashscreen.preventAutoHideAsync();
 export default function App() {
   const { setColorScheme } = useColorScheme();
 
-  function updateColorScheme(theme: "light" | "dark" | "system") {
-    setColorScheme(theme);
-  }
-
   const fetchUserColorScheme = async () => {
     try {
       const userThemeData = await getItem("app-theme");
 
       if (userThemeData) {
-        updateColorScheme(userThemeData);
+        setColorScheme(userThemeData);
       }
     } catch (error) {
       console.log("error", error);

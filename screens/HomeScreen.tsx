@@ -57,7 +57,6 @@ export default function HomeScreen({ navigation }: NavigationProps) {
 
   useEffect(() => {
     if (!userStoredImage) return;
-
     setImage(userStoredImage);
   }, []);
 
@@ -76,18 +75,27 @@ export default function HomeScreen({ navigation }: NavigationProps) {
             "https://www.rover.com/blog/wp-content/uploads/white-cat-min-960x540.jpg",
         }}
       />
-      <TextInput
-        className="border-2 bg-transparent border-black/30 dark:border-white/30 dark:text-neutral-50 mb-4"
-        value={artist}
-        onChangeText={setArtist}
-        placeholder="Taylor Swift, Drake, etc..."
-      />
-      <TextInput
-        className="border-2 bg-transparent border-black/30 dark:border-white/30 dark:text-neutral-50 mb-10"
-        value={album}
-        onChangeText={setAlbum}
-        placeholder="Lover, Scorpion, etc..."
-      />
+      {/* ARTIST INPUT */}
+      <View className="w-full flex items-start justify-start gap-1">
+        <Text className="font-bold text-dark dark:text-white">Artist :</Text>
+        <TextInput
+          className="border-2 bg-transparent border-black/30 dark:border-white/30 dark:text-neutral-50 mb-4"
+          value={artist}
+          onChangeText={setArtist}
+          placeholder="Taylor Swift, Drake, etc..."
+        />
+      </View>
+      {/* ALBUM INPUT */}
+      <View className="w-full flex items-start justify-start gap-1">
+        <Text className="font-bold text-dark dark:text-white">Album :</Text>
+        <TextInput
+          className="border-2 bg-transparent border-black/30 dark:border-white/30 dark:text-neutral-50 mb-10"
+          value={album}
+          onChangeText={setAlbum}
+          placeholder="Lover, Scorpion, etc..."
+        />
+      </View>
+      {/* SEARCH RESULTS */}
       <ScrollView className="flex flex-1 w-full">
         {isLoading && <ActivityIndicator size="large" color="white" />}
         {filteredAlbums &&
@@ -97,7 +105,15 @@ export default function HomeScreen({ navigation }: NavigationProps) {
               album.type.charAt(0).toUpperCase() + album.type.slice(1);
 
             return (
-              <View className="flex flex-row w-full mb-4" key={album.id}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Versus", {
+                    albumId: album.id,
+                  });
+                }}
+                className="flex flex-row w-full mb-4"
+                key={album.id}
+              >
                 <Image
                   className="w-2/5 h-40"
                   source={{ uri: album?.images[0]?.url }}
@@ -111,16 +127,6 @@ export default function HomeScreen({ navigation }: NavigationProps) {
                       setItem("bg-image", album?.images[0]?.url);
                     }}
                   >
-                    <TouchableOpacity
-                      className="flex flex-row items-center justify-center w-full h-auto bg-neutral-900 dark:bg-white rounded-sm"
-                      onPress={() => {
-                        navigation.navigate("Versus", {
-                          albumId: album.id,
-                        });
-                      }}
-                    >
-                      <Text>ID</Text>
-                    </TouchableOpacity>
                     <MaterialCommunityIcons
                       name="image-plus"
                       size={28}
@@ -134,7 +140,7 @@ export default function HomeScreen({ navigation }: NavigationProps) {
                     {formattedReleaseDate} • {formattedAlbumType}
                   </Text>
                 </View>
-              </View>
+              </TouchableOpacity>
             );
           })}
       </ScrollView>

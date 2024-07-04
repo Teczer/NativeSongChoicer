@@ -1,6 +1,7 @@
 type RootStackParamList = {
   Home: undefined;
   Settings: undefined;
+  Versus: { albumId: string };
 };
 
 type SettingsScreenNavigationProp = StackNavigationProp<

@@ -1,9 +1,11 @@
-import { useMemo, useState } from "react";
-import useDebounce from "../hooks/useDebounce";
+import { useEffect, useMemo, useState } from "react";
+import { setItem } from "../utils/AsyncStorage";
 
 import { useQuery } from "react-query";
+import useDebounce from "../hooks/useDebounce";
 import { useBackgroundImage } from "../store/useBackgroundImage";
 import { useColorScheme } from "nativewind";
+import { useInitializeBackgroundImage } from "../hooks/useInitializeBackgroundImage";
 
 import { fetchAlbums } from "../services/SpotifyServices";
 
@@ -18,16 +20,16 @@ import {
 import { TextInput } from "../components/text-input";
 import CustomSafeArea from "../components/CustomSafeArea";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { getItem, setItem } from "../utils/AsyncStorage";
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }: NavigationProps) {
   const [artist, setArtist] = useState<string>("");
   const [album, setAlbum] = useState<string>("");
+  const debouncedQuery = useDebounce([artist, album], 500);
+
   const { colorScheme } = useColorScheme();
 
+  const userStoredImage = useInitializeBackgroundImage();
   const { image, setImage } = useBackgroundImage();
-
-  const debouncedQuery = useDebounce([artist, album], 500);
 
   const {
     data: results,
@@ -53,8 +55,11 @@ export default function HomeScreen() {
     );
   }, [results, album]);
 
-  const imageData = getItem("bg-image");
-  console.log("imageData", imageData);
+  useEffect(() => {
+    if (!userStoredImage) return;
+
+    setImage(userStoredImage);
+  }, []);
 
   if (isError) {
     return <Text>Error</Text>;
@@ -106,6 +111,16 @@ export default function HomeScreen() {
                       setItem("bg-image", album?.images[0]?.url);
                     }}
                   >
+                    <TouchableOpacity
+                      className="flex flex-row items-center justify-center w-full h-auto bg-neutral-900 dark:bg-white rounded-sm"
+                      onPress={() => {
+                        navigation.navigate("Versus", {
+                          albumId: album.id,
+                        });
+                      }}
+                    >
+                      <Text>ID</Text>
+                    </TouchableOpacity>
                     <MaterialCommunityIcons
                       name="image-plus"
                       size={28}

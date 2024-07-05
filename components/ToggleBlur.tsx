@@ -3,19 +3,17 @@ import { Pressable, Text, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { setItem } from "../utils/AsyncStorage";
 import { capitalizeFirstLetter } from "../utils/CapitalizeFirstLetter";
-import { ColorSchemeSystem } from "nativewind/dist/style-sheet/color-scheme";
+import { useCustomBlurPreference } from "../store/useCustomBlurPreference";
 
 interface Props {
   theme: AppTheme;
   colorScheme: DeviceTheme;
-  setColorScheme: (colorSchemeSystem: ColorSchemeSystem) => void;
+  blurType: AppTheme;
 }
 
-export default function ToggleTheme({
-  theme,
-  colorScheme,
-  setColorScheme,
-}: Props) {
+export default function ToggleBlur({ theme, colorScheme, blurType }: Props) {
+  const { blur, setBlur } = useCustomBlurPreference();
+
   const shadowBox = {
     shadowColor: "#000",
     shadowOffset: {
@@ -39,8 +37,8 @@ export default function ToggleTheme({
           : { borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }),
       }}
       onPress={async () => {
-        setColorScheme(theme as "light" | "dark" | "system");
-        await setItem("app-theme", theme);
+        setBlur(blurType as "light" | "dark");
+        await setItem("app-blur", blurType);
       }}
     >
       <View
@@ -67,7 +65,7 @@ export default function ToggleTheme({
           justifyContent: "center",
         }}
       >
-        {colorScheme === theme && (
+        {blurType === blur && (
           <View
             style={{
               height: 10,

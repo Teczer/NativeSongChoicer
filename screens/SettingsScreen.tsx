@@ -1,10 +1,12 @@
-import { Image, Text, View } from "react-native";
+import { Image, Text, View, StatusBar } from "react-native";
 
 import ToggleTheme from "../components/ToggleTheme";
 import CustomSafeArea from "../components/CustomSafeArea";
 
 import { useColorScheme } from "nativewind";
 import { useBackgroundImage } from "../store/useBackgroundImage";
+import CustomBlurView from "../components/CustomBlurView";
+import ToggleBlur from "../components/ToggleBlur";
 
 export default function SettingsScreen() {
   const { colorScheme, setColorScheme } = useColorScheme();
@@ -22,9 +24,13 @@ export default function SettingsScreen() {
   };
 
   return (
-    <CustomSafeArea className="flex flex-col flex-1 items-center justify-start bg-white dark:bg-neutral-800 pt-10">
+    <CustomSafeArea className="flex flex-col flex-1 items-center justify-start pt-10">
+      <StatusBar
+        translucent={true}
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
       <Image
-        blurRadius={30}
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
         source={{
           uri:
@@ -32,6 +38,7 @@ export default function SettingsScreen() {
             "https://www.rover.com/blog/wp-content/uploads/white-cat-min-960x540.jpg",
         }}
       />
+      <CustomBlurView />
       <Text className="text-dark dark:text-white font-bold text-2xl mb-10">
         Settings
       </Text>
@@ -52,6 +59,17 @@ export default function SettingsScreen() {
           setColorScheme={setColorScheme}
           theme="dark"
         />
+      </View>
+
+      <View
+        className="flex w-full items-center justify-center mb-10"
+        style={{ gap: 2 }}
+      >
+        <Text className="w-5/6 text-lg text-start font-bold text-dark dark:text-neutral-200 mb-4">
+          Blur Type
+        </Text>
+        <ToggleBlur colorScheme={colorScheme} theme="light" blurType="light" />
+        <ToggleBlur colorScheme={colorScheme} theme="dark" blurType="dark" />
       </View>
 
       <View

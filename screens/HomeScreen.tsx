@@ -22,6 +22,7 @@ import CustomSafeArea from "../components/CustomSafeArea";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import StepImage from "../components/StepImage";
 import { capitalizeFirstLetter } from "../utils/CapitalizeFirstLetter";
+import CustomBlurView from "../components/CustomBlurView";
 
 export default function HomeScreen({ navigation }: NavigationProps) {
   const [artist, setArtist] = useState<string>("");
@@ -69,7 +70,6 @@ export default function HomeScreen({ navigation }: NavigationProps) {
   return (
     <CustomSafeArea className="flex flex-col flex-1 px-4 pt-10 items-center justify-start bg-slate-400 dark:bg-neutral-800 dark:text-neutral-50">
       <Image
-        blurRadius={30}
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
         source={{
           uri:
@@ -77,6 +77,7 @@ export default function HomeScreen({ navigation }: NavigationProps) {
             "https://www.rover.com/blog/wp-content/uploads/white-cat-min-960x540.jpg",
         }}
       />
+      <CustomBlurView />
       {/* ARTIST INPUT */}
       <View className="w-full flex items-start justify-start gap-1">
         <Text className="font-bold text-dark dark:text-white">Artist :</Text>

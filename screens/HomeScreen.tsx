@@ -21,6 +21,7 @@ import { TextInput } from "../components/text-input";
 import CustomSafeArea from "../components/CustomSafeArea";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import StepImage from "../components/StepImage";
+import { capitalizeFirstLetter } from "../utils/CapitalizeFirstLetter";
 
 export default function HomeScreen({ navigation }: NavigationProps) {
   const [artist, setArtist] = useState<string>("");
@@ -66,7 +67,7 @@ export default function HomeScreen({ navigation }: NavigationProps) {
   }
 
   return (
-    <CustomSafeArea className="flex flex-col flex-1 px-4 pt-10 items-center justify-start bg-slate-400 dark:bg-neutral-900 dark:text-neutral-50">
+    <CustomSafeArea className="flex flex-col flex-1 px-4 pt-10 items-center justify-start bg-slate-400 dark:bg-neutral-800 dark:text-neutral-50">
       <Image
         blurRadius={30}
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
@@ -106,8 +107,7 @@ export default function HomeScreen({ navigation }: NavigationProps) {
         {filteredAlbums &&
           filteredAlbums.map((album) => {
             const formattedReleaseDate = album.release_date.split("-")[0];
-            const formattedAlbumType =
-              album.type.charAt(0).toUpperCase() + album.type.slice(1);
+            const formattedAlbumType = capitalizeFirstLetter(album.type);
 
             return (
               <TouchableOpacity

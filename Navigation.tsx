@@ -36,7 +36,7 @@ function MainTabs() {
       left: "5%",
       bottom: 20,
       borderTopWidth: 0,
-      backgroundColor: colorScheme === "light" ? "#fff" : "#222",
+      backgroundColor: colorScheme === "light" ? "#fff" : "#171717",
       height: 60,
     },
     label: {

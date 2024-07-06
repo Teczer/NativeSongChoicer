@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useBackgroundImage } from "../store/useBackgroundImage";
-import { getItem } from "../utils/AsyncStorage";
+import { getItem } from "../lib/AsyncStorage";
 
 export const useInitializeBackgroundImage = (): string | null => {
   const [image, setImageState] = useState<string | null>("");

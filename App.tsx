@@ -1,12 +1,13 @@
+import "expo-dev-client";
+
 import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useColorScheme } from "nativewind";
 
 import * as Splashscreen from "expo-splash-screen";
 
-import { getItem } from "./utils/AsyncStorage";
-
 import Navigation from "./Navigation";
+import { getItem } from "./lib/AsyncStorage";
 
 const queryClient = new QueryClient();
 

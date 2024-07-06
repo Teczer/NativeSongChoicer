@@ -1,11 +1,14 @@
 import { useQuery } from "react-query";
 import CustomSafeArea from "../components/CustomSafeArea";
-import { Text } from "react-native";
+import { Image, Text } from "react-native";
 import { fetchAlbumTracks } from "../services/SpotifyServices";
 import { useMemo } from "react";
+import CustomBlurView from "../components/CustomBlurView";
+import { useBackgroundImage } from "../store/useBackgroundImage";
 
 export default function VersusScreen({ route }: NavigationProps) {
   const { albumId } = route.params;
+  const { image } = useBackgroundImage();
 
   const {
     data: results,
@@ -36,6 +39,15 @@ export default function VersusScreen({ route }: NavigationProps) {
   }
   return (
     <CustomSafeArea className="flex flex-col flex-1 items-center justify-center bg-white dark:bg-neutral-900">
+      <Image
+        className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
+        source={{
+          uri:
+            image ||
+            "https://www.rover.com/blog/wp-content/uploads/white-cat-min-960x540.jpg",
+        }}
+      />
+      <CustomBlurView />
       <Text className="text-black dark:text-white font-bold text-4xl mb-10">
         VersusScreen
       </Text>

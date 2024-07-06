@@ -1,10 +1,11 @@
-import { Pressable, Text, View } from "react-native";
-
-import { MaterialIcons } from "@expo/vector-icons";
-import { setItem } from "../utils/AsyncStorage";
-import { capitalizeFirstLetter } from "../utils/CapitalizeFirstLetter";
 import { useCustomBlurPreference } from "../store/useCustomBlurPreference";
 
+import { Pressable, Text, View } from "react-native";
+
+import { capitalizeFirstLetter } from "../lib/utils";
+import { setItem } from "../lib/AsyncStorage";
+
+import { MaterialIcons } from "@expo/vector-icons";
 interface Props {
   theme: AppTheme;
   colorScheme: DeviceTheme;

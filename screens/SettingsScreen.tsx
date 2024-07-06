@@ -23,6 +23,8 @@ export default function SettingsScreen() {
     elevation: 10,
   };
 
+  const currentStatusBarHeight = StatusBar.currentHeight;
+
   return (
     <CustomSafeArea className="flex flex-col flex-1 items-center justify-start pt-10">
       <StatusBar
@@ -38,7 +40,7 @@ export default function SettingsScreen() {
             "https://www.rover.com/blog/wp-content/uploads/white-cat-min-960x540.jpg",
         }}
       />
-      <CustomBlurView />
+      <CustomBlurView currentStatusBarHeight={currentStatusBarHeight} />
       <Text className="text-dark dark:text-white font-bold text-2xl mb-10">
         Settings
       </Text>

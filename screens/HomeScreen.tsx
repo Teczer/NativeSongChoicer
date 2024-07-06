@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { setItem } from "../utils/AsyncStorage";
 
 import { useQuery } from "react-query";
 import useDebounce from "../hooks/useDebounce";
@@ -7,12 +6,15 @@ import { useBackgroundImage } from "../store/useBackgroundImage";
 import { useColorScheme } from "nativewind";
 import { useInitializeBackgroundImage } from "../hooks/useInitializeBackgroundImage";
 
+import { setItem } from "../lib/AsyncStorage";
+import { capitalizeFirstLetter } from "../lib/utils";
 import { fetchAlbums } from "../services/SpotifyServices";
 
 import {
   ActivityIndicator,
   Image,
   ScrollView,
+  StatusBar,
   Text,
   TouchableOpacity,
   View,
@@ -21,7 +23,6 @@ import { TextInput } from "../components/text-input";
 import CustomSafeArea from "../components/CustomSafeArea";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import StepImage from "../components/StepImage";
-import { capitalizeFirstLetter } from "../utils/CapitalizeFirstLetter";
 import CustomBlurView from "../components/CustomBlurView";
 
 export default function HomeScreen({ navigation }: NavigationProps) {
@@ -67,8 +68,15 @@ export default function HomeScreen({ navigation }: NavigationProps) {
     return <Text>Error</Text>;
   }
 
+  const currentStatusBarHeight = StatusBar.currentHeight;
+
   return (
     <CustomSafeArea className="flex flex-col flex-1 px-4 pt-10 items-center justify-start bg-slate-400 dark:bg-neutral-800 dark:text-neutral-50">
+      <StatusBar
+        translucent={true}
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
       <Image
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
         source={{
@@ -77,7 +85,7 @@ export default function HomeScreen({ navigation }: NavigationProps) {
             "https://www.rover.com/blog/wp-content/uploads/white-cat-min-960x540.jpg",
         }}
       />
-      <CustomBlurView />
+      <CustomBlurView currentStatusBarHeight={currentStatusBarHeight} />
       {/* ARTIST INPUT */}
       <View className="w-full flex items-start justify-start gap-1">
         <Text className="font-bold text-dark dark:text-white">Artist :</Text>

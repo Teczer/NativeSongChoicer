@@ -54,10 +54,10 @@ export async function fetchAlbums(artist: string, album: string) {
   }
 }
 
-export async function fetchAlbumTracks(albumId: string) {
+export async function fetchAlbumById(albumId: string) {
   try {
     const token = await getAccessToken();
-    const response = await fetch(`${BASE_URL}/albums/${albumId}/tracks`, {
+    const response = await fetch(`${BASE_URL}/albums/${albumId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -68,7 +68,7 @@ export async function fetchAlbumTracks(albumId: string) {
     }
 
     const data = await response.json();
-    return data.items; // Retourne les pistes de l'album
+    return data; // Retourne les pistes de l'album
   } catch (error) {
     console.error("Failed to fetch album tracks:", error);
     throw error;

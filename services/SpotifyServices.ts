@@ -46,8 +46,11 @@ export async function fetchAlbums(artist: string, album: string) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const json = await response.json();
-    return json;
+    const json: SearchResponse = await response.json();
+    const filteredAlbums = json.albums.items.filter(
+      (album) => album.total_tracks >= 3
+    );
+    return filteredAlbums;
   } catch (error) {
     console.error("Failed to fetch albums:", error);
     throw error;

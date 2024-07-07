@@ -5,6 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "./screens/HomeScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import VersusScreen from "./screens/VersusScreen";
+import RankScreen from "./screens/RankScreen";
 
 import { Entypo } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
@@ -20,6 +21,7 @@ export default function Navigation() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Main" component={MainTabs} />
         <Stack.Screen name="Versus" component={VersusScreen} />
+        <Stack.Screen name="Rank" component={RankScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

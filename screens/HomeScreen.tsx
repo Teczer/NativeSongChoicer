@@ -48,7 +48,7 @@ export default function HomeScreen({ navigation }: NavigationProps) {
           debouncedQuery[0],
           debouncedQuery[1]
         );
-        return response.albums.items;
+        return response;
       }
     },
     enabled: Boolean(debouncedQuery[0]) || Boolean(debouncedQuery[1]),
@@ -122,6 +122,7 @@ export default function HomeScreen({ navigation }: NavigationProps) {
                 onPress={() => {
                   navigation.navigate("Versus", {
                     albumId: album.id,
+                    albumCover: album?.images[0]?.url,
                   });
                 }}
                 className="flex flex-row w-full mb-4"
@@ -149,8 +150,11 @@ export default function HomeScreen({ navigation }: NavigationProps) {
                   <Text className="w-full h-auto mb-1 text-start font-bold text-dark dark:text-white">
                     {album.name}
                   </Text>
-                  <Text className="w-full text-dark dark:text-neutral-300">
+                  <Text className="w-full text-dark dark:text-neutral-300 mb-1">
                     {formattedReleaseDate} • {formattedAlbumType}
+                  </Text>
+                  <Text className="w-full text-dark italic dark:text-neutral-300">
+                    {album.total_tracks} Titres
                   </Text>
                 </View>
               </TouchableOpacity>

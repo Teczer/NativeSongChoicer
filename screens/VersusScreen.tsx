@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useQuery } from "react-query";
-import { useColorScheme } from "nativewind";
 
 import { fetchAlbumById } from "../services/SpotifyServices";
 
@@ -14,21 +13,20 @@ import { textShadow } from "../lib/styles";
 
 import {
   Image,
-  ScrollView,
   StatusBar,
   Text,
   TouchableOpacity,
   View,
-  Platform,
   Dimensions,
   Animated,
 } from "react-native";
 import CustomSafeArea from "../components/CustomSafeArea";
 import { FontAwesome } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
+import VersusScreenSkeleton from "../components/VersusScreenSkeleton";
 
 export default function VersusScreen({ route, navigation }: NavigationProps) {
-  const { albumId } = route.params;
+  const { albumId, albumCover } = route.params;
 
   const {
     data: results,
@@ -62,7 +60,6 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
   const [songsEloScores, setSongsEloScores] = useState<{
     [key: number]: number;
   }>({});
-  const [finalRanking, setFinalRanking] = useState([]);
   const [voteHistory, setVoteHistory] = useState<
     {
       winnerId: number;
@@ -71,6 +68,12 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
       previousLoserElo: number;
     }[]
   >([]);
+
+  const albumInfos = {
+    albumName: results?.name,
+    albumArtist: results?.artists[0].name,
+    albumCover: results?.images[0]?.url,
+  };
 
   const handleVote = (winnerId: number, loserId: number) => {
     const previousWinnerElo = songsEloScores[winnerId];
@@ -100,7 +103,10 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
       const songRanking = songsWithEloScores.sort(
         (a, b) => b.eloScore - a.eloScore
       );
-      setFinalRanking(songRanking);
+      navigation.navigate("Rank", {
+        songRanking: songRanking,
+        albumInfos: albumInfos,
+      });
     }
   };
 
@@ -165,14 +171,15 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
   }, [currentDuelIndex]);
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <VersusScreenSkeleton albumCover={albumCover} />;
   }
 
   if (isError) {
     return <Text>Error</Text>;
   }
+
   return (
-    <CustomSafeArea className="flex flex-col flex-1 items-center justify-start bg-white dark:bg-neutral-900 pt-24">
+    <CustomSafeArea className="flex flex-col flex-1 items-center justify-start bg-white dark:bg-neutral-900 pt-20">
       {/* STATUS BAR */}
       <StatusBar
         translucent={true}
@@ -184,7 +191,7 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
         blurRadius={25}
         source={{
-          uri: results?.images[0]?.url,
+          uri: albumInfos.albumCover,
         }}
       />
       {/* BACK BUTTON */}
@@ -205,7 +212,9 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
         <TouchableOpacity
           style={{ borderRadius: 10, width: 44, height: 44, top: 53 }}
           onPress={handleUndo}
-          className="flex items-center justify-center absolute right-6 bg-transparent border-2 border-neutral-300"
+          className={`flex items-center justify-center absolute right-6 bg-transparent border-2 border-neutral-300${
+            currentDuelIndex > 0 ? "" : " opacity-50"
+          }`}
         >
           <FontAwesome
             style={{
@@ -221,10 +230,14 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
       )}
       {/* ALBUM ARTIST NAME */}
       <Text
-        style={{ ...textShadow }}
+        numberOfLines={2}
+        style={{
+          ...textShadow,
+          width: Dimensions.get("window").width / 1.3,
+        }}
         className="text-center text-white font-bold text-3xl mb-6"
       >
-        {results?.artists[0].name} • {results?.name}
+        {albumInfos.albumArtist} • {albumInfos.albumName}
       </Text>
       {/* DUEL VIEW*/}
       {!isRankingFinished && (
@@ -245,7 +258,9 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
           >
             <TouchableOpacity
               className="flex justify-center items-center"
-              onPress={() => handleVote(songA?.id, songB?.id)}
+              onPress={() =>
+                handleVote(songA?.id as number, songB?.id as number)
+              }
               style={{ gap: 10 }}
             >
               <Image
@@ -262,6 +277,7 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
                 }}
               />
               <Text
+                numberOfLines={1}
                 style={{
                   ...textShadow,
                   width: Dimensions.get("window").width - 10,
@@ -280,7 +296,9 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
             <TouchableOpacity
               className="flex justify-center items-center"
               style={{ gap: 10 }}
-              onPress={() => handleVote(songB?.id, songA?.id)}
+              onPress={() =>
+                handleVote(songB?.id as number, songA?.id as number)
+              }
             >
               <Image
                 source={{
@@ -296,6 +314,7 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
                 }}
               />
               <Text
+                numberOfLines={1}
                 className="text-white font-bold text-2xl text-center"
                 style={{
                   ...textShadow,
@@ -307,18 +326,6 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
             </TouchableOpacity>
           </Animated.View>
         </View>
-      )}
-      {/* FINAL RANKING VIEW */}
-      {isRankingFinished && (
-        <ScrollView className="flex flex-1 w-4/5 flex-col">
-          {finalRanking.map((song, index) => (
-            <View key={index}>
-              <Text className="text-black dark:text-white font-bold text-2xl mb-10">
-                #{index + 1} {song.title} {song.eloScore.toFixed(0)}
-              </Text>
-            </View>
-          ))}
-        </ScrollView>
       )}
     </CustomSafeArea>
   );

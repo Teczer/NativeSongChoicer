@@ -1,5 +1,17 @@
+import { useState } from "react";
+
 import { useQuery } from "react-query";
-import CustomSafeArea from "../components/CustomSafeArea";
+import { useColorScheme } from "nativewind";
+
+import { fetchAlbumById } from "../services/SpotifyServices";
+
+import { generateDuels } from "../lib/duels";
+import {
+  calculateNewEloScore,
+  revertEloScore,
+} from "../lib/calculate-elo-score";
+import { textShadow } from "../lib/styles";
+
 import {
   Image,
   ScrollView,
@@ -7,21 +19,15 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Platform,
+  Dimensions,
 } from "react-native";
-import { fetchAlbumById } from "../services/SpotifyServices";
-import { useState } from "react";
-import { useBackgroundImage } from "../store/useBackgroundImage";
-import { generateDuels } from "../lib/duels";
-import {
-  calculateNewEloScore,
-  revertEloScore,
-} from "../lib/calculate-elo-score";
+import CustomSafeArea from "../components/CustomSafeArea";
 import { FontAwesome } from "@expo/vector-icons";
-import { useColorScheme } from "nativewind";
+import { Entypo } from "@expo/vector-icons";
 
-export default function VersusScreen({ route }: NavigationProps) {
+export default function VersusScreen({ route, navigation }: NavigationProps) {
   const { albumId } = route.params;
-  const { image } = useBackgroundImage();
   const { colorScheme } = useColorScheme();
 
   const {
@@ -57,7 +63,6 @@ export default function VersusScreen({ route }: NavigationProps) {
     [key: number]: number;
   }>({});
   const [finalRanking, setFinalRanking] = useState([]);
-  console.log("finalRanking", finalRanking);
   const [voteHistory, setVoteHistory] = useState<
     {
       winnerId: number;
@@ -138,7 +143,7 @@ export default function VersusScreen({ route }: NavigationProps) {
     return <Text>Error</Text>;
   }
   return (
-    <CustomSafeArea className="flex flex-col flex-1 items-center justify-start bg-white dark:bg-neutral-900 pt-10">
+    <CustomSafeArea className="flex flex-col flex-1 items-center justify-start bg-white dark:bg-neutral-900 pt-20">
       <StatusBar
         translucent={true}
         backgroundColor="transparent"
@@ -146,65 +151,121 @@ export default function VersusScreen({ route }: NavigationProps) {
       />
       <Image
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
-        blurRadius={10}
+        blurRadius={25}
         source={{
-          uri:
-            image ||
-            "https://www.rover.com/blog/wp-content/uploads/white-cat-min-960x540.jpg",
+          uri: results?.images[0]?.url,
         }}
       />
-      <Text className="text-center text-black dark:text-white font-bold text-4xl mb-6">
+      <TouchableOpacity
+        style={{ borderRadius: 10, width: 40, height: 40 }}
+        onPress={() => navigation.goBack()}
+        className="flex items-center justify-center absolute top-14 left-6 bg-transparent border-2 border-neutral-300"
+      >
+        <Entypo
+          style={{ ...textShadow }}
+          name="chevron-left"
+          size={32}
+          color="white"
+        />
+      </TouchableOpacity>
+      {!isRankingFinished && (
+        <TouchableOpacity
+          style={{ borderRadius: 10, width: 44, height: 44, top: 53 }}
+          onPress={handleUndo}
+          className="flex items-center justify-center absolute right-6 bg-transparent border-2 border-neutral-300"
+        >
+          <FontAwesome
+            style={{ ...textShadow }}
+            name="undo"
+            size={20}
+            color="white"
+          />
+        </TouchableOpacity>
+      )}
+
+      <Text
+        style={{ ...textShadow }}
+        className="text-center text-white font-bold text-3xl mb-6"
+      >
         {results?.artists[0].name} • {results?.name}
       </Text>
       {/* DUEL VIEW*/}
       {!isRankingFinished && (
         <View
           className="flex flex-1 w-full items-center justify-start"
-          style={{ gap: 40 }}
+          style={{ gap: 50 }}
         >
-          <Text className="text-black dark:text-white font-bold text-4xl">
+          {/* COMPLETION PERCENTAGE */}
+          <Text
+            style={{ ...textShadow }}
+            className="text-white font-bold text-3xl mb-10"
+          >
             {completionPercentage.toFixed(0)}%
           </Text>
           {/* SONG A */}
           <TouchableOpacity
-            className="flex justify-center items-center"
+            className="flex justify-center items-center mb-32"
             onPress={() => handleVote(songA?.id, songB?.id)}
-            style={{ gap: 10 }}
+            style={{
+              gap: 10,
+              width: 300,
+              height: 155,
+              borderRadius: 6,
+              ...Platform.select({
+                ios: {
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.8,
+                  shadowRadius: 2,
+                },
+                android: {
+                  elevation: 10,
+                },
+              }),
+            }}
           >
             <Image
               source={{
                 uri: songA?.image.url,
               }}
               style={{
-                width: 300,
-                height: 200,
+                width: Dimensions.get("window").width / 1.3,
+                height: Dimensions.get("window").height / 4,
                 resizeMode: "cover",
                 borderRadius: 6,
               }}
             />
-            <Text className="text-black dark:text-white font-bold text-2xl">
+            <Text
+              style={{
+                ...textShadow,
+                width: Dimensions.get("window").width - 10,
+                fontFamily: "Cochin",
+              }}
+              className="text-white font-bold text-2xl text-center"
+            >
               {songA?.title}
             </Text>
-          </TouchableOpacity>
-          {/* UNDO BUTTON */}
-          <TouchableOpacity
-            className="flex flex-row items-center justify-center border-2 border-dark dark:border-[#ffffffa1] py-2 px-4"
-            style={{ borderRadius: 6, gap: 10 }}
-            onPress={handleUndo}
-          >
-            <Text className="text-black dark:text-white font-bold text-xl">
-              Previous Duel
-            </Text>
-            <FontAwesome
-              name="undo"
-              size={20}
-              color={colorScheme === "light" ? "#000000" : "#ffffff"}
-            />
           </TouchableOpacity>
           {/* SONG B */}
           <TouchableOpacity
             className="flex justify-center items-center"
-            style={{ gap: 10 }}
+            style={{
+              gap: 10,
+              width: 300,
+              height: 155,
+              borderRadius: 6,
+              ...Platform.select({
+                ios: {
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.8,
+                  shadowRadius: 2,
+                },
+                android: {
+                  elevation: 10,
+                },
+              }),
+            }}
             onPress={() => handleVote(songB?.id, songA?.id)}
           >
             <Image
@@ -212,13 +273,19 @@ export default function VersusScreen({ route }: NavigationProps) {
                 uri: songB?.image.url,
               }}
               style={{
-                width: 300,
-                height: 200,
+                width: Dimensions.get("window").width / 1.3,
+                height: Dimensions.get("window").height / 4,
                 resizeMode: "cover",
                 borderRadius: 6,
               }}
             />
-            <Text className="text-black dark:text-white font-bold text-2xl">
+            <Text
+              className="text-white font-bold text-2xl text-center"
+              style={{
+                ...textShadow,
+                width: Dimensions.get("window").width - 10,
+              }}
+            >
               {songB?.title}
             </Text>
           </TouchableOpacity>

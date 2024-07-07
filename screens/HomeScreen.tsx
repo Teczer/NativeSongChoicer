@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import useDebounce from "../hooks/useDebounce";
 import { useBackgroundImage } from "../store/useBackgroundImage";
+import { useCustomBlurIntensity } from "../store/useCustomBlurPreference";
 import { useColorScheme } from "nativewind";
 import { useInitializeBackgroundImage } from "../hooks/useInitializeBackgroundImage";
 
@@ -23,7 +24,6 @@ import { TextInput } from "../components/text-input";
 import CustomSafeArea from "../components/CustomSafeArea";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import StepImage from "../components/StepImage";
-import CustomBlurView from "../components/CustomBlurView";
 
 export default function HomeScreen({ navigation }: NavigationProps) {
   const [artist, setArtist] = useState<string>("");
@@ -34,6 +34,7 @@ export default function HomeScreen({ navigation }: NavigationProps) {
 
   const userStoredImage = useInitializeBackgroundImage();
   const { image, setImage } = useBackgroundImage();
+  const { blurIntensity } = useCustomBlurIntensity();
 
   const {
     data: results,
@@ -68,8 +69,6 @@ export default function HomeScreen({ navigation }: NavigationProps) {
     return <Text>Error</Text>;
   }
 
-  const currentStatusBarHeight = StatusBar.currentHeight;
-
   return (
     <CustomSafeArea className="flex flex-col flex-1 px-4 pt-10 items-center justify-start bg-slate-400 dark:bg-neutral-800 dark:text-neutral-50">
       <StatusBar
@@ -79,13 +78,13 @@ export default function HomeScreen({ navigation }: NavigationProps) {
       />
       <Image
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
+        blurRadius={blurIntensity}
         source={{
           uri:
             image ||
             "https://www.rover.com/blog/wp-content/uploads/white-cat-min-960x540.jpg",
         }}
       />
-      <CustomBlurView currentStatusBarHeight={currentStatusBarHeight} />
       {/* ARTIST INPUT */}
       <View className="w-full flex items-start justify-start gap-1">
         <Text className="font-bold text-dark dark:text-white">Artist :</Text>

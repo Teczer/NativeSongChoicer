@@ -1,13 +1,12 @@
 import { create } from "zustand";
 
-interface CustomBlurPreference {
-  blur: "light" | "dark";
-  setBlur: (blur: "light" | "dark") => void;
+interface CustomBlurIntensity {
+  blurIntensity: number;
+  setBlurIntensity: (blurIntensity: number) => void;
 }
 
-export const useCustomBlurPreference = create<CustomBlurPreference>()(
-  (set) => ({
-    blur: "light",
-    setBlur: (blur: "light" | "dark") => set({ blur: blur }),
-  })
-);
+export const useCustomBlurIntensity = create<CustomBlurIntensity>()((set) => ({
+  blurIntensity: 6,
+  setBlurIntensity: (blurIntensity: number) =>
+    set({ blurIntensity: blurIntensity }),
+}));

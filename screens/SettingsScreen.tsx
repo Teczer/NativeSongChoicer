@@ -1,16 +1,18 @@
-import { Image, Text, View, StatusBar } from "react-native";
+import { Image, StatusBar, Text, View } from "react-native";
 
 import ToggleTheme from "../components/ToggleTheme";
 import CustomSafeArea from "../components/CustomSafeArea";
 
 import { useColorScheme } from "nativewind";
 import { useBackgroundImage } from "../store/useBackgroundImage";
-import CustomBlurView from "../components/CustomBlurView";
-import ToggleBlur from "../components/ToggleBlur";
+import Slider from "@react-native-community/slider";
+import { useCustomBlurIntensity } from "../store/useCustomBlurPreference";
+import { setItem } from "../lib/AsyncStorage";
 
 export default function SettingsScreen() {
   const { colorScheme, setColorScheme } = useColorScheme();
   const { image } = useBackgroundImage();
+  const { blurIntensity, setBlurIntensity } = useCustomBlurIntensity();
 
   const shadowBox = {
     shadowColor: "#000",
@@ -23,8 +25,6 @@ export default function SettingsScreen() {
     elevation: 10,
   };
 
-  const currentStatusBarHeight = StatusBar.currentHeight;
-
   return (
     <CustomSafeArea className="flex flex-col flex-1 items-center justify-start pt-10">
       <StatusBar
@@ -34,13 +34,13 @@ export default function SettingsScreen() {
       />
       <Image
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
+        blurRadius={blurIntensity}
         source={{
           uri:
             image ||
             "https://www.rover.com/blog/wp-content/uploads/white-cat-min-960x540.jpg",
         }}
       />
-      <CustomBlurView currentStatusBarHeight={currentStatusBarHeight} />
       <Text className="text-dark dark:text-white font-bold text-2xl mb-10">
         Settings
       </Text>
@@ -68,12 +68,24 @@ export default function SettingsScreen() {
         style={{ gap: 2 }}
       >
         <Text className="w-5/6 text-lg text-start font-bold text-dark dark:text-neutral-200 mb-4">
-          Blur Type
+          Blur Intensity
         </Text>
-        <ToggleBlur colorScheme={colorScheme} theme="light" blurType="light" />
-        <ToggleBlur colorScheme={colorScheme} theme="dark" blurType="dark" />
+        <Slider
+          style={{ width: 350 }}
+          value={blurIntensity}
+          onValueChange={async (blurValue) => {
+            setBlurIntensity(blurValue);
+            await setItem("blurIntensity", blurValue);
+          }}
+          minimumValue={0}
+          maximumValue={30}
+          thumbTintColor={colorScheme === "dark" ? "#FFFFFF" : "#000000"}
+          minimumTrackTintColor={colorScheme === "dark" ? "#FFFFFF" : "#000000"}
+          maximumTrackTintColor={
+            colorScheme === "dark" ? "rgba(255,255,255,0.7)" : "#FFFFFF"
+          }
+        />
       </View>
-
       <View
         className="flex w-full items-center justify-center"
         style={{ gap: 2 }}

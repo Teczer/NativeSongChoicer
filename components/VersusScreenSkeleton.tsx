@@ -1,10 +1,24 @@
-import { Image, StatusBar, View, ActivityIndicator } from "react-native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import {
+  Image,
+  StatusBar,
+  View,
+  ActivityIndicator,
+  Text,
+  TouchableOpacity,
+} from "react-native";
+
+interface Props {
+  albumCover: string;
+  error?: boolean;
+  navigation?: StackNavigationProp<RootStackParamList, "Home">;
+}
 
 export default function VersusScreenSkeleton({
   albumCover,
-}: {
-  albumCover: string;
-}) {
+  error,
+  navigation,
+}: Props) {
   return (
     <View
       className="flex flex-1 w-full flex-col items-center justify-center"
@@ -24,7 +38,28 @@ export default function VersusScreenSkeleton({
           uri: albumCover,
         }}
       />
-      <ActivityIndicator size="large" color="white" />
+      {!error && <ActivityIndicator size="large" color="white" />}
+      {error && (
+        <View
+          className="flex flex-1 w-full items-center justify-center"
+          style={{ gap: 20 }}
+        >
+          <Text className="text-red-600 font-bold text-2xl">
+            An error occured
+          </Text>
+          <TouchableOpacity
+            className="flex justify-center items-center px-3 py-1"
+            style={{
+              borderWidth: 1,
+              borderColor: "white",
+              borderRadius: 6,
+            }}
+            onPress={() => navigation?.navigate("Home")}
+          >
+            <Text className="text-white font-bold text-lg">Back to home</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }

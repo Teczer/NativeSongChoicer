@@ -15,14 +15,11 @@ import {
   Image,
   StatusBar,
   Text,
-  TouchableOpacity,
   View,
   Dimensions,
   Animated,
 } from "react-native";
 import CustomSafeArea from "../components/CustomSafeArea";
-import { FontAwesome } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
 import VersusScreenSkeleton from "../components/VersusScreenSkeleton";
 import BackButton from "../components/BackButton";
 import UndoButton from "../components/UndoButton";
@@ -57,6 +54,12 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
     },
   });
 
+  const albumInfos = {
+    albumName: results?.name,
+    albumArtist: results?.artists[0].name,
+    albumCover: results?.images[0]?.url,
+  };
+
   const [songs, setSongs] = useState<Song[]>([]);
   const [duels, setDuels] = useState<[Song, Song][]>([]);
   const [currentDuelIndex, setCurrentDuelIndex] = useState<number>(0);
@@ -71,12 +74,6 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
       previousLoserElo: number;
     }[]
   >([]);
-
-  const albumInfos = {
-    albumName: results?.name,
-    albumArtist: results?.artists[0].name,
-    albumCover: results?.images[0]?.url,
-  };
 
   const handleVote = (winnerId: number, loserId: number) => {
     const previousWinnerElo = songsEloScores[winnerId];
@@ -177,8 +174,14 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
     return <VersusScreenSkeleton albumCover={albumCover} />;
   }
 
-  if (isError) {
-    return <Text>Error</Text>;
+  if (!isError) {
+    return (
+      <VersusScreenSkeleton
+        albumCover={albumCover}
+        error={true}
+        navigation={navigation}
+      />
+    );
   }
 
   return (

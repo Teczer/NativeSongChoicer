@@ -174,7 +174,7 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
     return <VersusScreenSkeleton albumCover={albumCover} />;
   }
 
-  if (!isError) {
+  if (isError) {
     return (
       <VersusScreenSkeleton
         albumCover={albumCover}

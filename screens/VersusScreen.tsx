@@ -244,19 +244,19 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
               onPress={() => handleVote(songA?.id, songB?.id)}
               style={{ gap: 10 }}
             >
-              <View className="shadow-2xl shadow-black">
-                <Image
-                  source={{
-                    uri: songA?.image.url,
-                  }}
-                  style={{
-                    width: Dimensions.get("window").width / 1.3,
-                    height: Dimensions.get("window").height / 4,
-                    resizeMode: "cover",
-                    borderRadius: 6,
-                  }}
-                />
-              </View>
+              <Image
+                source={{
+                  uri: songA?.image.url,
+                }}
+                style={{
+                  width: Dimensions.get("window").width / 1.3,
+                  height: Dimensions.get("window").height / 4,
+                  resizeMode: "cover",
+                  borderRadius: 6,
+                  borderWidth: 1,
+                  borderColor: "rgba(0, 0, 0, 0.1)",
+                }}
+              />
               <Text
                 style={{
                   ...textShadow,
@@ -278,19 +278,19 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
               style={{ gap: 10 }}
               onPress={() => handleVote(songB?.id, songA?.id)}
             >
-              <View className="shadow-2xl shadow-black">
-                <Image
-                  source={{
-                    uri: songB?.image.url,
-                  }}
-                  style={{
-                    width: Dimensions.get("window").width / 1.3,
-                    height: Dimensions.get("window").height / 4,
-                    resizeMode: "cover",
-                    borderRadius: 6,
-                  }}
-                />
-              </View>
+              <Image
+                source={{
+                  uri: songB?.image.url,
+                }}
+                style={{
+                  width: Dimensions.get("window").width / 1.3,
+                  height: Dimensions.get("window").height / 4,
+                  resizeMode: "cover",
+                  borderRadius: 6,
+                  borderWidth: 1,
+                  borderColor: "rgba(0, 0, 0, 0.1)",
+                }}
+              />
               <Text
                 className="text-white font-bold text-2xl text-center"
                 style={{

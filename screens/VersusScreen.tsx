@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useQuery } from "react-query";
 import { useColorScheme } from "nativewind";
@@ -21,6 +21,7 @@ import {
   View,
   Platform,
   Dimensions,
+  Animated,
 } from "react-native";
 import CustomSafeArea from "../components/CustomSafeArea";
 import { FontAwesome } from "@expo/vector-icons";
@@ -28,7 +29,6 @@ import { Entypo } from "@expo/vector-icons";
 
 export default function VersusScreen({ route, navigation }: NavigationProps) {
   const { albumId } = route.params;
-  const { colorScheme } = useColorScheme();
 
   const {
     data: results,
@@ -135,6 +135,35 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
 
   const completionPercentage = (currentDuelIndex / duels.length) * 100;
 
+  // Valeurs animées pour les positions de Song A et Song B
+  const translateXSongA = useRef(
+    new Animated.Value(-Dimensions.get("window").width)
+  ).current;
+  const translateXSongB = useRef(
+    new Animated.Value(Dimensions.get("window").width)
+  ).current;
+
+  const startAnimations = () => {
+    translateXSongA.setValue(-Dimensions.get("window").width);
+    translateXSongB.setValue(Dimensions.get("window").width);
+    Animated.parallel([
+      Animated.timing(translateXSongA, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateXSongB, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  useEffect(() => {
+    startAnimations();
+  }, [currentDuelIndex]);
+
   if (isLoading) {
     return <Text>Loading...</Text>;
   }
@@ -143,12 +172,14 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
     return <Text>Error</Text>;
   }
   return (
-    <CustomSafeArea className="flex flex-col flex-1 items-center justify-start bg-white dark:bg-neutral-900 pt-20">
+    <CustomSafeArea className="flex flex-col flex-1 items-center justify-start bg-white dark:bg-neutral-900 pt-24">
+      {/* STATUS BAR */}
       <StatusBar
         translucent={true}
         backgroundColor="transparent"
         barStyle="light-content"
       />
+      {/* BACKGROUND IMAGE */}
       <Image
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
         blurRadius={25}
@@ -156,6 +187,7 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
           uri: results?.images[0]?.url,
         }}
       />
+      {/* BACK BUTTON */}
       <TouchableOpacity
         style={{ borderRadius: 10, width: 40, height: 40 }}
         onPress={() => navigation.goBack()}
@@ -168,6 +200,7 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
           color="white"
         />
       </TouchableOpacity>
+      {/* UNDO BUTTON */}
       {!isRankingFinished && (
         <TouchableOpacity
           style={{ borderRadius: 10, width: 44, height: 44, top: 53 }}
@@ -182,7 +215,7 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
           />
         </TouchableOpacity>
       )}
-
+      {/* ALBUM ARTIST NAME */}
       <Text
         style={{ ...textShadow }}
         className="text-center text-white font-bold text-3xl mb-6"
@@ -198,97 +231,77 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
           {/* COMPLETION PERCENTAGE */}
           <Text
             style={{ ...textShadow }}
-            className="text-white font-bold text-3xl mb-10"
+            className="text-white font-bold text-3xl"
           >
             {completionPercentage.toFixed(0)}%
           </Text>
           {/* SONG A */}
-          <TouchableOpacity
-            className="flex justify-center items-center mb-32"
-            onPress={() => handleVote(songA?.id, songB?.id)}
-            style={{
-              gap: 10,
-              width: 300,
-              height: 155,
-              borderRadius: 6,
-              ...Platform.select({
-                ios: {
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.8,
-                  shadowRadius: 2,
-                },
-                android: {
-                  elevation: 10,
-                },
-              }),
-            }}
+          <Animated.View
+            style={{ transform: [{ translateX: translateXSongA }] }}
           >
-            <Image
-              source={{
-                uri: songA?.image.url,
-              }}
-              style={{
-                width: Dimensions.get("window").width / 1.3,
-                height: Dimensions.get("window").height / 4,
-                resizeMode: "cover",
-                borderRadius: 6,
-              }}
-            />
-            <Text
-              style={{
-                ...textShadow,
-                width: Dimensions.get("window").width - 10,
-                fontFamily: "Cochin",
-              }}
-              className="text-white font-bold text-2xl text-center"
+            <TouchableOpacity
+              className="flex justify-center items-center"
+              onPress={() => handleVote(songA?.id, songB?.id)}
+              style={{ gap: 10 }}
             >
-              {songA?.title}
-            </Text>
-          </TouchableOpacity>
+              <View className="shadow-2xl shadow-black">
+                <Image
+                  source={{
+                    uri: songA?.image.url,
+                  }}
+                  style={{
+                    width: Dimensions.get("window").width / 1.3,
+                    height: Dimensions.get("window").height / 4,
+                    resizeMode: "cover",
+                    borderRadius: 6,
+                  }}
+                />
+              </View>
+              <Text
+                style={{
+                  ...textShadow,
+                  width: Dimensions.get("window").width - 10,
+                  fontFamily: "Cochin",
+                }}
+                className="text-white font-bold text-2xl text-center"
+              >
+                {songA?.title}
+              </Text>
+            </TouchableOpacity>
+          </Animated.View>
           {/* SONG B */}
-          <TouchableOpacity
-            className="flex justify-center items-center"
-            style={{
-              gap: 10,
-              width: 300,
-              height: 155,
-              borderRadius: 6,
-              ...Platform.select({
-                ios: {
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.8,
-                  shadowRadius: 2,
-                },
-                android: {
-                  elevation: 10,
-                },
-              }),
-            }}
-            onPress={() => handleVote(songB?.id, songA?.id)}
+          <Animated.View
+            style={{ transform: [{ translateX: translateXSongB }] }}
           >
-            <Image
-              source={{
-                uri: songB?.image.url,
-              }}
-              style={{
-                width: Dimensions.get("window").width / 1.3,
-                height: Dimensions.get("window").height / 4,
-                resizeMode: "cover",
-                borderRadius: 6,
-              }}
-            />
-            <Text
-              className="text-white font-bold text-2xl text-center"
-              style={{
-                ...textShadow,
-                width: Dimensions.get("window").width - 10,
-              }}
+            <TouchableOpacity
+              className="flex justify-center items-center"
+              style={{ gap: 10 }}
+              onPress={() => handleVote(songB?.id, songA?.id)}
             >
-              {songB?.title}
-            </Text>
-          </TouchableOpacity>
+              <View className="shadow-2xl shadow-black">
+                <Image
+                  source={{
+                    uri: songB?.image.url,
+                  }}
+                  style={{
+                    width: Dimensions.get("window").width / 1.3,
+                    height: Dimensions.get("window").height / 4,
+                    resizeMode: "cover",
+                    borderRadius: 6,
+                  }}
+                />
+              </View>
+              <Text
+                className="text-white font-bold text-2xl text-center"
+                style={{
+                  ...textShadow,
+                  width: Dimensions.get("window").width - 10,
+                }}
+              >
+                {songB?.title}
+              </Text>
+            </TouchableOpacity>
+          </Animated.View>
         </View>
       )}
       {/* FINAL RANKING VIEW */}

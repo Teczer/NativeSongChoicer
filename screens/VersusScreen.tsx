@@ -24,6 +24,9 @@ import CustomSafeArea from "../components/CustomSafeArea";
 import { FontAwesome } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import VersusScreenSkeleton from "../components/VersusScreenSkeleton";
+import BackButton from "../components/BackButton";
+import UndoButton from "../components/UndoButton";
+import VoteButton from "../components/VoteButton";
 
 export default function VersusScreen({ route, navigation }: NavigationProps) {
   const { albumId, albumCover } = route.params;
@@ -195,38 +198,13 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
         }}
       />
       {/* BACK BUTTON */}
-      <TouchableOpacity
-        style={{ borderRadius: 10, width: 40, height: 40 }}
-        onPress={() => navigation.goBack()}
-        className="flex items-center justify-center absolute top-14 left-6 bg-transparent"
-      >
-        <Entypo
-          style={{ ...textShadow }}
-          name="chevron-left"
-          size={36}
-          color="white"
-        />
-      </TouchableOpacity>
+      <BackButton handleBack={() => navigation.goBack()} />
       {/* UNDO BUTTON */}
       {!isRankingFinished && (
-        <TouchableOpacity
-          style={{ borderRadius: 10, width: 44, height: 44, top: 53 }}
-          onPress={handleUndo}
-          className={`flex items-center justify-center absolute right-6 bg-transparent border-2 border-neutral-300${
-            currentDuelIndex > 0 ? "" : " opacity-50"
-          }`}
-        >
-          <FontAwesome
-            style={{
-              textShadowColor: "black",
-              textShadowOffset: { width: 0.5, height: 0.5 },
-              textShadowRadius: 4,
-            }}
-            name="undo"
-            size={20}
-            color="white"
-          />
-        </TouchableOpacity>
+        <UndoButton
+          handleUndo={handleUndo}
+          currentDuelIndex={currentDuelIndex}
+        />
       )}
       {/* ALBUM ARTIST NAME */}
       <Text
@@ -256,74 +234,23 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
           <Animated.View
             style={{ transform: [{ translateX: translateXSongA }] }}
           >
-            <TouchableOpacity
-              className="flex justify-center items-center"
-              onPress={() =>
+            <VoteButton
+              handleVote={() =>
                 handleVote(songA?.id as number, songB?.id as number)
               }
-              style={{ gap: 10 }}
-            >
-              <Image
-                source={{
-                  uri: songA?.image.url,
-                }}
-                style={{
-                  width: Dimensions.get("window").width / 1.3,
-                  height: Dimensions.get("window").height / 4,
-                  resizeMode: "cover",
-                  borderRadius: 6,
-                  borderWidth: 1,
-                  borderColor: "rgba(0, 0, 0, 0.1)",
-                }}
-              />
-              <Text
-                numberOfLines={1}
-                style={{
-                  ...textShadow,
-                  width: Dimensions.get("window").width - 10,
-                  fontFamily: "Cochin",
-                }}
-                className="text-white font-bold text-2xl text-center"
-              >
-                {songA?.title}
-              </Text>
-            </TouchableOpacity>
+              song={songA as Song}
+            />
           </Animated.View>
           {/* SONG B */}
           <Animated.View
             style={{ transform: [{ translateX: translateXSongB }] }}
           >
-            <TouchableOpacity
-              className="flex justify-center items-center"
-              style={{ gap: 10 }}
-              onPress={() =>
+            <VoteButton
+              handleVote={() =>
                 handleVote(songB?.id as number, songA?.id as number)
               }
-            >
-              <Image
-                source={{
-                  uri: songB?.image.url,
-                }}
-                style={{
-                  width: Dimensions.get("window").width / 1.3,
-                  height: Dimensions.get("window").height / 4,
-                  resizeMode: "cover",
-                  borderRadius: 6,
-                  borderWidth: 1,
-                  borderColor: "rgba(0, 0, 0, 0.1)",
-                }}
-              />
-              <Text
-                numberOfLines={1}
-                className="text-white font-bold text-2xl text-center"
-                style={{
-                  ...textShadow,
-                  width: Dimensions.get("window").width - 10,
-                }}
-              >
-                {songB?.title}
-              </Text>
-            </TouchableOpacity>
+              song={songB as Song}
+            />
           </Animated.View>
         </View>
       )}

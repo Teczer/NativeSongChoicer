@@ -191,12 +191,12 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
       <TouchableOpacity
         style={{ borderRadius: 10, width: 40, height: 40 }}
         onPress={() => navigation.goBack()}
-        className="flex items-center justify-center absolute top-14 left-6 bg-transparent border-2 border-neutral-300"
+        className="flex items-center justify-center absolute top-14 left-6 bg-transparent"
       >
         <Entypo
           style={{ ...textShadow }}
           name="chevron-left"
-          size={32}
+          size={36}
           color="white"
         />
       </TouchableOpacity>
@@ -208,7 +208,11 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
           className="flex items-center justify-center absolute right-6 bg-transparent border-2 border-neutral-300"
         >
           <FontAwesome
-            style={{ ...textShadow }}
+            style={{
+              textShadowColor: "black",
+              textShadowOffset: { width: 0.5, height: 0.5 },
+              textShadowRadius: 4,
+            }}
             name="undo"
             size={20}
             color="white"
@@ -226,14 +230,14 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
       {!isRankingFinished && (
         <View
           className="flex flex-1 w-full items-center justify-start"
-          style={{ gap: 50 }}
+          style={{ gap: 30 }}
         >
           {/* COMPLETION PERCENTAGE */}
           <Text
             style={{ ...textShadow }}
             className="text-white font-bold text-3xl"
           >
-            {completionPercentage.toFixed(0)}%
+            {completionPercentage.toFixed(0)} %
           </Text>
           {/* SONG A */}
           <Animated.View

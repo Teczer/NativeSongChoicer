@@ -24,10 +24,12 @@ import { TextInput } from "../components/text-input";
 import CustomSafeArea from "../components/CustomSafeArea";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import StepImage from "../components/StepImage";
+import HomeErrorScreen from "../components/HomeErrorScreen";
 
 export default function HomeScreen({ navigation }: NavigationProps) {
   const [artist, setArtist] = useState<string>("");
   const [album, setAlbum] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
   const debouncedQuery = useDebounce([artist, album], 500);
 
   const { colorScheme } = useColorScheme();
@@ -40,6 +42,7 @@ export default function HomeScreen({ navigation }: NavigationProps) {
     data: results,
     isLoading,
     isError,
+    error: queryError,
   } = useQuery<Item[] | undefined>({
     queryKey: ["albums", ...debouncedQuery],
     queryFn: async () => {
@@ -66,7 +69,7 @@ export default function HomeScreen({ navigation }: NavigationProps) {
   }, []);
 
   if (isError) {
-    return <Text>Error</Text>;
+    return <HomeErrorScreen queryError={queryError} />;
   }
 
   return (
@@ -82,7 +85,7 @@ export default function HomeScreen({ navigation }: NavigationProps) {
         source={{
           uri:
             image ||
-            "https://www.rover.com/blog/wp-content/uploads/white-cat-min-960x540.jpg",
+            "https://i.scdn.co/image/ab67616d0000b273d1f65b1e79536bb46ead609a",
         }}
       />
       {/* ARTIST INPUT */}

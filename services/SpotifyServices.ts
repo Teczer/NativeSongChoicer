@@ -1,5 +1,4 @@
 import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "@env";
-
 // ACCESS TOKEN
 
 export async function getAccessToken() {

@@ -1,11 +1,22 @@
-import { Image, StatusBar, Text, TouchableOpacity, View } from "react-native";
-
-import { textShadow } from "../lib/styles";
-import { useCustomBlurIntensity } from "../store/useCustomBlurPreference";
+import { useRef } from "react";
+import {
+  Image,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+  View,
+  Alert,
+  PermissionsAndroid,
+  Platform,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-
 import CustomSafeArea from "../components/CustomSafeArea";
 import { Entypo } from "@expo/vector-icons";
+import { captureRef } from "react-native-view-shot";
+import { useCustomBlurIntensity } from "../store/useCustomBlurPreference";
+import { textShadow } from "../lib/styles";
+// import { CameraRoll } from "@react-native-camera-roll/camera-roll";
+
 interface ParamsProps {
   songRanking: any[];
   albumInfos: {
@@ -17,8 +28,61 @@ interface ParamsProps {
 
 export default function RankScreen({ route, navigation }: NavigationProps) {
   const { songRanking, albumInfos }: ParamsProps = route.params;
-
   const { blurIntensity } = useCustomBlurIntensity();
+  const viewRef = useRef();
+
+  const getPermissionAndroid = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: "Image Download Permission",
+          message: "Your permission is required to save images to your device",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK",
+        }
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        return true;
+      }
+      Alert.alert(
+        "",
+        "Your permission is required to save images to your device",
+        [{ text: "OK", onPress: () => {} }],
+        { cancelable: false }
+      );
+    } catch (err) {
+      console.log("err", err);
+    }
+  };
+
+  const downloadImage = async () => {
+    try {
+      const uri = await captureRef(viewRef, {
+        format: "png",
+        quality: 0.8,
+      });
+
+      if (Platform.OS === "android") {
+        const granted = await getPermissionAndroid();
+        if (!granted) {
+          return;
+        }
+      }
+
+      const image = CameraRoll.save(uri, "photo");
+      if (image) {
+        Alert.alert(
+          "",
+          "Image saved successfully.",
+          [{ text: "OK", onPress: () => {} }],
+          { cancelable: false }
+        );
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   return (
     <CustomSafeArea className="flex flex-col flex-1 items-center justify-start pt-24 bg-black">
@@ -27,28 +91,18 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
         backgroundColor="transparent"
         barStyle="light-content"
       />
-      {/* BACKGROUND IMAGE */}
       <Image
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
         blurRadius={blurIntensity}
         source={{ uri: albumInfos.albumCover }}
       />
-      {/* BACK HOME BUTTON */}
       <TouchableOpacity
         className="flex items-center justify-center absolute top-14 left-5 bg-transparent border border-neutral-300"
         onPress={() => navigation?.navigate("Home")}
         style={{ borderRadius: 10, width: 40, height: 40 }}
       >
-        <Entypo
-          style={{
-            ...textShadow,
-          }}
-          name="home"
-          size={20}
-          color="white"
-        />
+        <Entypo style={{ ...textShadow }} name="home" size={20} color="white" />
       </TouchableOpacity>
-      {/* CARD VIEW */}
       <ScrollView
         className="w-full h-full flex flex-col bg-transparent px-4"
         contentContainerStyle={{
@@ -64,9 +118,7 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
           style={{ borderRadius: 10, width: 40, height: 40 }}
         >
           <Entypo
-            style={{
-              ...textShadow,
-            }}
+            style={{ ...textShadow }}
             name="home"
             size={20}
             color="white"
@@ -120,6 +172,12 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
           ))}
         </View>
       </ScrollView>
+      <TouchableOpacity
+        className="absolute bottom-10 right-10 bg-blue-500 p-4 rounded-full"
+        onPress={downloadImage}
+      >
+        <Text className="text-white">Download</Text>
+      </TouchableOpacity>
     </CustomSafeArea>
   );
 }

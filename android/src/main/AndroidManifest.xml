@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" package="fr.greweb.nativesongchoicer">
+
+  <!-- Permissions -->
+  <uses-permission android:name="android.permission.INTERNET" />
+  <!-- Ajoutez d'autres autorisations nécessaires ici si nécessaire -->
+
+  <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:usesCleartextTraffic="true">
+    <!-- Autorise le trafic HTTP -->
+
+    <!-- Activité principale -->
+    <activity android:name=".MainActivity" android:label="@string/app_name" android:configChanges="keyboard|keyboardHidden|orientation|screenSize" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+
+    <!-- Ajoutez d'autres activités, services, récepteurs, etc. ici si nécessaire -->
+
+  </application>
+
+</manifest>

@@ -39,3 +39,5 @@ yarn-error.*
 # BUILD EXPO
 
 nativesongchoicer-428520-10140f4338b6.json
+
+eas.json

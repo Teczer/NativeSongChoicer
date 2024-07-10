@@ -3,6 +3,12 @@
     "version": ">= 10.1.1"
   },
   "build": {
+    "staging": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      }
+    },
     "development": {
       "developmentClient": true,
       "distribution": "internal"
@@ -10,9 +16,9 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "autoIncrement": true
+    }
   },
-  "submit": {
-    "production": {}
-  }
+  "submit": {}
 }

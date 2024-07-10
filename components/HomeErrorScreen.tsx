@@ -8,8 +8,6 @@ import { useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Pokemon } from "../types/pokemon";
 
-import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "@env";
-
 interface Props {
   queryError: any;
 }
@@ -57,10 +55,6 @@ export default function HomeErrorScreen({ queryError }: Props) {
         }}
       />
       <Text className="text-white font-bold text-xl mb-6 px-4 py-2 text-center">
-        Show env : client_id : {SPOTIFY_CLIENT_ID || "nothing"}, client_secret :
-        {SPOTIFY_CLIENT_SECRET || "nothing"}
-      </Text>
-      <Text className="text-white font-bold text-xl mb-6 px-4 py-2 text-center">
         An error occured : {queryError?.toString() || "No error"}
       </Text>
       <TouchableOpacity
@@ -69,7 +63,7 @@ export default function HomeErrorScreen({ queryError }: Props) {
         style={{ borderRadius: 10 }}
       >
         <Text className="text-white text-xl font-bold">
-          Fetch Pokemon for test
+          Fetch Pokemon for test internet connection
         </Text>
       </TouchableOpacity>
       {pokemonError && (

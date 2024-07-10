@@ -38,7 +38,7 @@ export default function SettingsScreen() {
         source={{
           uri:
             image ||
-            "https://www.rover.com/blog/wp-content/uploads/white-cat-min-960x540.jpg",
+            "https://i.scdn.co/image/ab67616d0000b273d1f65b1e79536bb46ead609a",
         }}
       />
       <Text className="text-dark dark:text-white font-bold text-2xl mb-10">

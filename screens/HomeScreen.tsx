@@ -29,12 +29,10 @@ import HomeErrorScreen from "../components/HomeErrorScreen";
 export default function HomeScreen({ navigation }: NavigationProps) {
   const [artist, setArtist] = useState<string>("");
   const [album, setAlbum] = useState<string>("");
-  const [error, setError] = useState<boolean>(false);
   const debouncedQuery = useDebounce([artist, album], 500);
 
   const { colorScheme } = useColorScheme();
 
-  const userStoredImage = useInitializeBackgroundImage();
   const { image, setImage } = useBackgroundImage();
   const { blurIntensity } = useCustomBlurIntensity();
 
@@ -63,11 +61,6 @@ export default function HomeScreen({ navigation }: NavigationProps) {
     );
   }, [results, album]);
 
-  useEffect(() => {
-    if (!userStoredImage) return;
-    setImage(userStoredImage);
-  }, []);
-
   if (isError) {
     return <HomeErrorScreen queryError={queryError} />;
   }
@@ -82,11 +75,7 @@ export default function HomeScreen({ navigation }: NavigationProps) {
       <Image
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
         blurRadius={blurIntensity}
-        source={{
-          uri:
-            image ||
-            "https://i.scdn.co/image/ab67616d0000b273d1f65b1e79536bb46ead609a",
-        }}
+        source={{ uri: image }}
       />
       {/* ARTIST INPUT */}
       <View className="w-full flex items-start justify-start gap-1">

@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import {
   Image,
   StatusBar,
@@ -8,13 +8,13 @@ import {
   Alert,
   PermissionsAndroid,
   Platform,
+  BackHandler,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import CustomSafeArea from "../components/CustomSafeArea";
 import { Entypo } from "@expo/vector-icons";
 import { captureRef } from "react-native-view-shot";
 import { useCustomBlurIntensity } from "../store/useCustomBlurPreference";
-import { textShadow } from "../lib/styles";
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 import Share from "react-native-share";
 
@@ -30,7 +30,7 @@ interface ParamsProps {
 export default function RankScreen({ route, navigation }: NavigationProps) {
   const { songRanking, albumInfos }: ParamsProps = route.params;
   const { blurIntensity } = useCustomBlurIntensity();
-  const viewRef = useRef();
+  const viewRef = useRef(null);
 
   const getPermissionAndroid = async () => {
     try {
@@ -71,7 +71,7 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
         }
       }
 
-      const image = CameraRoll.save(uri, "photo");
+      const image = await CameraRoll.save(uri, { type: "photo" });
       if (image) {
         Alert.alert(
           "",
@@ -108,6 +108,23 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
       console.log("error", error);
     }
   };
+
+  // Prevent back button on Android to Home instead of back to previous screen
+  if (Platform.OS === "android") {
+    useEffect(() => {
+      const backAction = () => {
+        navigation.navigate("Home");
+        return true;
+      };
+
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
+
+      return () => backHandler.remove();
+    }, []);
+  }
 
   return (
     <CustomSafeArea
@@ -179,23 +196,34 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
             }}
           />
           <View className="flex flex-1 w-full flex-col px-6 pb-6">
-            {songRanking.map((song, index) => (
-              <Text
-                key={index}
-                className="text-white font-bold text-lg mb-2 px-4"
-                style={{
-                  paddingTop: 6,
-                  paddingBottom: 6,
-                  borderRadius: 8,
-                  backgroundColor: "rgba(0, 0, 0, 0.4)",
-                  letterSpacing: 2,
-                  borderWidth: 1,
-                  borderColor: "rgba(255, 255, 255, 0.2)",
-                }}
-              >
-                {index + 1}. {song.title}
-              </Text>
-            ))}
+            {songRanking.map((song, index) => {
+              const widthPercentage =
+                index === 0
+                  ? "100%"
+                  : index === 1
+                  ? "95%"
+                  : index === 2
+                  ? "90%"
+                  : "80%";
+              return (
+                <Text
+                  key={index}
+                  className="text-white font-bold text-lg mb-2 px-4"
+                  style={{
+                    width: widthPercentage,
+                    paddingTop: 6,
+                    paddingBottom: 6,
+                    borderRadius: 8,
+                    backgroundColor: "rgba(0, 0, 0, 0.4)",
+                    letterSpacing: 2,
+                    borderWidth: 1,
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  }}
+                >
+                  {index + 1}. {song.title}
+                </Text>
+              );
+            })}
             {/* SONG CHOICER MARK */}
             <View className="w-full flex justify-center items-center mt-4">
               <Text

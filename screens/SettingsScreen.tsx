@@ -35,11 +35,7 @@ export default function SettingsScreen() {
       <Image
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
         blurRadius={blurIntensity}
-        source={{
-          uri:
-            image ||
-            "https://i.scdn.co/image/ab67616d0000b273d1f65b1e79536bb46ead609a",
-        }}
+        source={{ uri: image }}
       />
       <Text className="text-dark dark:text-white font-bold text-2xl mb-10">
         Settings
@@ -73,9 +69,9 @@ export default function SettingsScreen() {
         <Slider
           style={{ width: 350 }}
           value={blurIntensity}
-          onValueChange={async (blurValue) => {
+          onValueChange={(blurValue) => {
             setBlurIntensity(blurValue);
-            await setItem("blurIntensity", blurValue);
+            setItem("blurIntensity", blurValue);
           }}
           minimumValue={0}
           maximumValue={30}

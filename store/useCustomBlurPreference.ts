@@ -6,7 +6,7 @@ interface CustomBlurIntensity {
 }
 
 export const useCustomBlurIntensity = create<CustomBlurIntensity>()((set) => ({
-  blurIntensity: 16,
+  blurIntensity: 25,
   setBlurIntensity: (blurIntensity: number) =>
     set({ blurIntensity: blurIntensity }),
 }));

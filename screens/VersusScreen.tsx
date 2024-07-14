@@ -212,11 +212,12 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
       {/* ALBUM ARTIST NAME */}
       <Text
         numberOfLines={2}
+        className="text-center text-white text-3xl mb-6"
         style={{
           ...textShadow,
           width: Dimensions.get("window").width / 1.3,
+          fontFamily: "Geist Mono Bold",
         }}
-        className="text-center text-white font-bold text-3xl mb-6"
       >
         {albumInfos.albumArtist} • {albumInfos.albumName}
       </Text>
@@ -228,8 +229,13 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
         >
           {/* COMPLETION PERCENTAGE */}
           <Text
-            style={{ ...textShadow }}
-            className="text-white font-bold text-3xl"
+            style={{
+              fontFamily: "Geist Mono Bold",
+              textShadowColor: "black",
+              textShadowOffset: { width: 0.5, height: 0.5 },
+              textShadowRadius: 6,
+            }}
+            className="text-white text-3xl"
           >
             {completionPercentage.toFixed(0)} %
           </Text>

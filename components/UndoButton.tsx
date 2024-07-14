@@ -9,7 +9,7 @@ interface Props {
 export default function UndoButton({ handleUndo, currentDuelIndex }: Props) {
   return (
     <TouchableOpacity
-      style={{ borderRadius: 10, width: 44, height: 44, top: 53 }}
+      style={{ borderRadius: 10, width: 44, height: 44, top: 42 }}
       onPress={handleUndo}
       className={`flex items-center justify-center absolute right-6 bg-transparent border-2 border-neutral-300${
         currentDuelIndex > 0 ? "" : " opacity-50"

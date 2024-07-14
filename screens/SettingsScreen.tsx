@@ -25,6 +25,11 @@ export default function SettingsScreen() {
     elevation: 10,
   };
 
+  const fallBackImage =
+    colorScheme === "light"
+      ? "https://img.freepik.com/free-vector/winter-blue-pink-gradient-background-vector_53876-117275.jpg"
+      : "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/e7/3b/e3/e73be310-12b8-f792-8d4b-29208eb38051/196871724647.jpg/1200x1200bb.jpg";
+
   return (
     <CustomSafeArea className="flex flex-col flex-1 items-center justify-start pt-10">
       <StatusBar
@@ -35,16 +40,19 @@ export default function SettingsScreen() {
       <Image
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
         blurRadius={blurIntensity}
-        source={{ uri: image }}
+        source={{ uri: image || fallBackImage }}
       />
-      <Text className="text-dark dark:text-white font-bold text-2xl mb-10">
+      <Text className="text-dark dark:text-white font-mono_bold text-2xl mb-10">
         Settings
       </Text>
       <View
         className="flex w-full items-center justify-center mb-10"
         style={{ gap: 2 }}
       >
-        <Text className="w-5/6 text-lg text-start font-bold text-dark dark:text-neutral-200 mb-4">
+        <Text
+          style={{ fontFamily: "Geist Bold" }}
+          className="w-5/6 text-lg text-start text-dark dark:text-neutral-200 mb-4"
+        >
           Theme Settings
         </Text>
         <ToggleTheme
@@ -63,7 +71,10 @@ export default function SettingsScreen() {
         className="flex w-full items-center justify-center mb-10"
         style={{ gap: 2 }}
       >
-        <Text className="w-5/6 text-lg text-start font-bold text-dark dark:text-neutral-200 mb-4">
+        <Text
+          style={{ fontFamily: "Geist Bold" }}
+          className="w-5/6 text-lg text-start text-dark dark:text-neutral-200 mb-4"
+        >
           Blur Intensity
         </Text>
         <Slider
@@ -86,16 +97,21 @@ export default function SettingsScreen() {
         className="flex w-full items-center justify-center"
         style={{ gap: 2 }}
       >
-        <Text className="w-5/6 text-lg text-start font-bold dark:text-neutral-200 mb-4">
+        <Text
+          style={{ fontFamily: "Geist Bold" }}
+          className="w-5/6 text-lg text-start text-dark dark:text-neutral-200 mb-4"
+        >
           Version
         </Text>
 
         <View
           style={{ ...(colorScheme === "light" ? shadowBox : {}) }}
-          className="flex flex-row w-5/6 h-14 px-8 items-center justify-between bg-white dark:bg-neutral-900 rounded-xl"
+          className="flex flex-row w-5/6 h-14 px-6 items-center justify-between bg-white dark:bg-neutral-900 rounded-xl"
         >
-          <Text className="text-dark italic dark:text-white">beta v1.2.4</Text>
-          <Text className="text-dark font-bold dark:text-white">
+          <Text className="text-dark font-mono dark:text-white">
+            beta v1.2.4
+          </Text>
+          <Text className="text-dark font-mono_bold dark:text-white">
             @2024 by Teczer
           </Text>
         </View>

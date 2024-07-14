@@ -8,7 +8,7 @@ export default function BackButton({ handleBack }: { handleBack: () => void }) {
     <TouchableOpacity
       style={{ borderRadius: 10, width: 40, height: 40 }}
       onPress={handleBack}
-      className="flex items-center justify-center absolute top-14 left-6 bg-transparent"
+      className="flex items-center justify-center absolute top-12 left-6 bg-transparent"
     >
       <Entypo
         style={{ ...textShadow }}

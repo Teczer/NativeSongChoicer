@@ -176,7 +176,7 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
           <View className="h-10 bg-transparent"></View>
           {/* ALBUM NAME + ARTIST */}
           <Text
-            className="text-white font-bold text-xl mb-6 px-4 py-2"
+            className="text-white font-mono_bold text-xl mb-6 px-4 py-2"
             style={{
               borderRadius: 5,
               backgroundColor: "rgba(0,0,0,0.5)",
@@ -208,7 +208,7 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
               return (
                 <Text
                   key={index}
-                  className="text-white font-bold text-lg mb-2 px-4"
+                  className="text-white font-mono_bold text-lg mb-2 px-4"
                   style={{
                     width: widthPercentage,
                     paddingTop: 6,
@@ -227,7 +227,7 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
             {/* SONG CHOICER MARK */}
             <View className="w-full flex justify-center items-center mt-4">
               <Text
-                className="w-2/3 text-white text-center font-bold text-sm mb-2 px-4 py-1"
+                className="w-2/3 text-white text-center font-mono text-sm mb-2 px-4 py-1"
                 style={{
                   borderRadius: 8,
                   backgroundColor: "rgba(0, 0, 0, 0.4)",

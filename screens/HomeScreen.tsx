@@ -1,12 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { useQuery } from "react-query";
 import useDebounce from "../hooks/useDebounce";
 import { useBackgroundImage } from "../store/useBackgroundImage";
 import { useCustomBlurIntensity } from "../store/useCustomBlurPreference";
 import { useColorScheme } from "nativewind";
-import { useInitializeBackgroundImage } from "../hooks/useInitializeBackgroundImage";
-
 import { setItem } from "../lib/AsyncStorage";
 import { capitalizeFirstLetter } from "../lib/utils";
 import { fetchAlbums } from "../services/SpotifyServices";
@@ -65,6 +63,11 @@ export default function HomeScreen({ navigation }: NavigationProps) {
     return <HomeErrorScreen queryError={queryError} />;
   }
 
+  const fallBackImage =
+    colorScheme === "light"
+      ? "https://img.freepik.com/free-vector/winter-blue-pink-gradient-background-vector_53876-117275.jpg"
+      : "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/e7/3b/e3/e73be310-12b8-f792-8d4b-29208eb38051/196871724647.jpg/1200x1200bb.jpg";
+
   return (
     <CustomSafeArea className="flex flex-col flex-1 px-4 pt-10 items-center justify-start bg-slate-400 dark:bg-neutral-800 dark:text-neutral-50">
       <StatusBar
@@ -72,16 +75,22 @@ export default function HomeScreen({ navigation }: NavigationProps) {
         backgroundColor="transparent"
         barStyle="light-content"
       />
+
       <Image
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
         blurRadius={blurIntensity}
-        source={{ uri: image }}
+        source={{ uri: image || fallBackImage }}
       />
       {/* ARTIST INPUT */}
       <View className="w-full flex items-start justify-start gap-1">
-        <Text className="font-bold text-dark dark:text-white">Artist :</Text>
+        <Text
+          className="text-dark dark:text-white"
+          style={{ fontFamily: "Geist Bold" }}
+        >
+          Artist :
+        </Text>
         <TextInput
-          className="border-2 bg-transparent border-black/30 dark:border-white/30 dark:text-neutral-50 mb-4"
+          className="border-2 font-regular bg-transparent border-black/30 dark:border-white/30 dark:text-neutral-50 mb-4"
           value={artist}
           onChangeText={setArtist}
           placeholder="Taylor Swift, Drake, etc..."
@@ -89,15 +98,19 @@ export default function HomeScreen({ navigation }: NavigationProps) {
       </View>
       {/* ALBUM INPUT */}
       <View className="w-full flex items-start justify-start gap-1">
-        <Text className="font-bold text-dark dark:text-white">Album :</Text>
+        <Text
+          className="text-dark dark:text-white"
+          style={{ fontFamily: "Geist Bold" }}
+        >
+          Album :
+        </Text>
         <TextInput
-          className="border-2 bg-transparent border-black/30 dark:border-white/30 dark:text-neutral-50 mb-10"
+          className="border-2 font-regular bg-transparent border-black/30 dark:border-white/30 dark:text-neutral-50 mb-10"
           value={album}
           onChangeText={setAlbum}
           placeholder="Lover, Scorpion, etc..."
         />
       </View>
-
       {/* STEP IMAGE */}
       {!isLoading && !filteredAlbums && <StepImage colorScheme={colorScheme} />}
 
@@ -139,13 +152,16 @@ export default function HomeScreen({ navigation }: NavigationProps) {
                       color={colorScheme === "light" ? "black" : "white"}
                     />
                   </TouchableOpacity>
-                  <Text className="w-full h-auto mb-1 text-start font-bold text-dark dark:text-white">
+                  <Text
+                    className="w-full h-auto mb-1 text-start text-dark dark:text-white"
+                    style={{ fontFamily: "Geist Bold" }}
+                  >
                     {album.name}
                   </Text>
-                  <Text className="w-full text-dark dark:text-neutral-300 mb-1">
+                  <Text className="w-full font-regular text-dark dark:text-neutral-300 mb-1">
                     {formattedReleaseDate} • {formattedAlbumType}
                   </Text>
-                  <Text className="w-full text-dark italic dark:text-neutral-300">
+                  <Text className="w-full text-dark font-light italic dark:text-neutral-300">
                     {album.total_tracks} Titres
                   </Text>
                 </View>

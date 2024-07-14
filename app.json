@@ -2,7 +2,7 @@
   "expo": {
     "name": "Song Choicer",
     "slug": "my-app",
-    "version": "1.1.7",
+    "version": "1.1.9",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -21,7 +21,7 @@
         "backgroundColor": "#191414"
       },
       "package": "com.teczer.myapp",
-      "versionCode": 28
+      "versionCode": 34
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,6 +30,11 @@
       "eas": {
         "projectId": "b3afff9f-9b62-44e2-9f43-acc78b73c031"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-font"
+      ]
+    ]
   }
 }

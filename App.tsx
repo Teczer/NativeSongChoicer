@@ -1,5 +1,6 @@
 import "expo-dev-client";
 
+import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useColorScheme } from "nativewind";
@@ -10,7 +11,6 @@ import Navigation from "./Navigation";
 import { getItem } from "./lib/AsyncStorage";
 import { useBackgroundImage } from "./store/useBackgroundImage";
 import { useCustomBlurIntensity } from "./store/useCustomBlurPreference";
-
 const queryClient = new QueryClient();
 
 Splashscreen.preventAutoHideAsync();
@@ -19,6 +19,16 @@ export default function App() {
   const { setColorScheme } = useColorScheme();
   const { setImage } = useBackgroundImage();
   const { setBlurIntensity } = useCustomBlurIntensity();
+  const [loaded, error] = useFonts({
+    "Geist Mono Light": require("./assets/fonts/GeistMono-Light.ttf"),
+    "Geist Mono Bold": require("./assets/fonts/GeistMono-Bold.ttf"),
+    "Geist Mono Regular": require("./assets/fonts/GeistMono-Regular.ttf"),
+    "Geist Mono Medium": require("./assets/fonts/GeistMono-Medium.ttf"),
+    "Geist Light": require("./assets/fonts/Geist-Light.ttf"),
+    "Geist Bold": require("./assets/fonts/Geist-Bold.ttf"),
+    "Geist Regular": require("./assets/fonts/Geist-Regular.ttf"),
+    "Geist Medium": require("./assets/fonts/Geist-Medium.ttf"),
+  });
 
   const fetchUserColorScheme = async () => {
     try {
@@ -70,6 +80,16 @@ export default function App() {
     fetchUserColorScheme();
     fetchUserBlurIntensity();
   }, []);
+
+  useEffect(() => {
+    if (loaded || error) {
+      Splashscreen.hideAsync();
+    }
+  }, [loaded, error]);
+
+  if (!loaded && !error) {
+    return null;
+  }
 
   return (
     <QueryClientProvider client={queryClient}>

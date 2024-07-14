@@ -9,8 +9,14 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-geist-sans)"],
-        mono: ["var(--font-geist-mono)"],
+        mono: ["Geist Mono Regular"],
+        mono_bold: ["Geist Mono Bold"],
+        mono_medium: ["Geist Mono Medium"],
+        mono_light: ["Geist Mono Light"],
+        regular: ["Geist Regular"],
+        bold: ["Geist Bold"],
+        medium: ["Geist Medium"],
+        light: ["Geist Light"],
       },
       filter: {
         dropShadowDark: "drop-shadow(0 1px 1px rgb(255 255 255 / 1))",

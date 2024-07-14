@@ -32,9 +32,9 @@ export default function VoteButton({ handleVote, song }: Props) {
         style={{
           ...textShadow,
           width: Dimensions.get("window").width - 10,
-          fontFamily: "Cochin",
+          fontFamily: "Geist Mono Bold",
         }}
-        className="text-white font-bold text-2xl text-center"
+        className="text-white text-2xl text-center"
       >
         {song?.title}
       </Text>

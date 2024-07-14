@@ -1,11 +1,10 @@
 import { useMemo, useState } from "react";
 
+import { useMMKVNumber, useMMKVString } from "react-native-mmkv";
 import { useQuery } from "react-query";
-import useDebounce from "../hooks/useDebounce";
-import { useBackgroundImage } from "../store/useBackgroundImage";
-import { useCustomBlurIntensity } from "../store/useCustomBlurPreference";
 import { useColorScheme } from "nativewind";
-import { setItem } from "../lib/AsyncStorage";
+import useDebounce from "../hooks/useDebounce";
+
 import { capitalizeFirstLetter } from "../lib/utils";
 import { fetchAlbums } from "../services/SpotifyServices";
 
@@ -20,19 +19,19 @@ import {
 } from "react-native";
 import { TextInput } from "../components/text-input";
 import CustomSafeArea from "../components/CustomSafeArea";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import StepImage from "../components/StepImage";
 import HomeErrorScreen from "../components/HomeErrorScreen";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function HomeScreen({ navigation }: NavigationProps) {
+  const [blurIntensity] = useMMKVNumber("blur-intensity");
+  const [backgroundImage, setBackgroundImage] =
+    useMMKVString("background-image");
   const [artist, setArtist] = useState<string>("");
   const [album, setAlbum] = useState<string>("");
   const debouncedQuery = useDebounce([artist, album], 500);
 
   const { colorScheme } = useColorScheme();
-
-  const { image, setImage } = useBackgroundImage();
-  const { blurIntensity } = useCustomBlurIntensity();
 
   const {
     data: results,
@@ -59,14 +58,20 @@ export default function HomeScreen({ navigation }: NavigationProps) {
     );
   }, [results, album]);
 
-  if (isError) {
-    return <HomeErrorScreen queryError={queryError} />;
-  }
-
   const fallBackImage =
     colorScheme === "light"
       ? "https://img.freepik.com/free-vector/winter-blue-pink-gradient-background-vector_53876-117275.jpg"
-      : "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/f0/39/e8/f039e88b-ed90-c43d-f4d2-1248850c8ebf/196589980014.jpg/1200x1200bb.jpg";
+      : "https://cdns-images.dzcdn.net/images/cover/c1739b10fb9608e7fb6830162d90c8b4/1900x1900-000000-80-0-0.jpg";
+
+  if (isError) {
+    return (
+      <HomeErrorScreen
+        queryError={queryError}
+        backgroundImage={backgroundImage || fallBackImage}
+        blurIntensity={blurIntensity || 25}
+      />
+    );
+  }
 
   return (
     <CustomSafeArea className="flex flex-col flex-1 px-4 pt-10 items-center justify-start bg-slate-400 dark:bg-neutral-800 dark:text-neutral-50">
@@ -75,11 +80,10 @@ export default function HomeScreen({ navigation }: NavigationProps) {
         backgroundColor="transparent"
         barStyle="light-content"
       />
-
       <Image
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
-        blurRadius={blurIntensity}
-        source={{ uri: image || fallBackImage }}
+        blurRadius={blurIntensity || 25}
+        source={{ uri: backgroundImage || fallBackImage }}
       />
       {/* ARTIST INPUT */}
       <View className="w-full flex items-start justify-start gap-1">
@@ -141,10 +145,7 @@ export default function HomeScreen({ navigation }: NavigationProps) {
                 <View className="w-3/5 flex flex-col justify-center items-start pl-3">
                   <TouchableOpacity
                     className="absolute top-2 right-0 w-auto"
-                    onPress={() => {
-                      setImage(album?.images[0]?.url);
-                      setItem("bg-image", album?.images[0]?.url);
-                    }}
+                    onPress={() => setBackgroundImage(album?.images[0]?.url)}
                   >
                     <MaterialCommunityIcons
                       name="image-plus"

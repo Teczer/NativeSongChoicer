@@ -1,18 +1,17 @@
-import { Image, StatusBar, Text, View } from "react-native";
-
-import ToggleTheme from "../components/ToggleTheme";
-import CustomSafeArea from "../components/CustomSafeArea";
-
+import { useMMKVNumber, useMMKVString } from "react-native-mmkv";
 import { useColorScheme } from "nativewind";
-import { useBackgroundImage } from "../store/useBackgroundImage";
+
+import appJson from "../app.json";
+
+import { Image, StatusBar, Text, View } from "react-native";
 import Slider from "@react-native-community/slider";
-import { useCustomBlurIntensity } from "../store/useCustomBlurPreference";
-import { setItem } from "../lib/AsyncStorage";
+import CustomSafeArea from "../components/CustomSafeArea";
+import ToggleTheme from "../components/ToggleTheme";
 
 export default function SettingsScreen() {
+  const [backgroundImage] = useMMKVString("background-image");
+  const [blurIntensity, setBlurIntensity] = useMMKVNumber("blur-intensity");
   const { colorScheme, setColorScheme } = useColorScheme();
-  const { image } = useBackgroundImage();
-  const { blurIntensity, setBlurIntensity } = useCustomBlurIntensity();
 
   const shadowBox = {
     shadowColor: "#000",
@@ -28,7 +27,12 @@ export default function SettingsScreen() {
   const fallBackImage =
     colorScheme === "light"
       ? "https://img.freepik.com/free-vector/winter-blue-pink-gradient-background-vector_53876-117275.jpg"
-      : "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/f0/39/e8/f039e88b-ed90-c43d-f4d2-1248850c8ebf/196589980014.jpg/1200x1200bb.jpg";
+      : "https://cdns-images.dzcdn.net/images/cover/c1739b10fb9608e7fb6830162d90c8b4/1900x1900-000000-80-0-0.jpg";
+
+  // Get the app version from the app.json file
+  const {
+    expo: { version },
+  } = appJson;
 
   return (
     <CustomSafeArea className="flex flex-col flex-1 items-center justify-start pt-10">
@@ -39,8 +43,8 @@ export default function SettingsScreen() {
       />
       <Image
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
-        blurRadius={blurIntensity}
-        source={{ uri: image || fallBackImage }}
+        blurRadius={blurIntensity || 25}
+        source={{ uri: backgroundImage || fallBackImage }}
       />
       <Text className="text-dark dark:text-white font-mono_bold text-2xl mb-10">
         Settings
@@ -80,10 +84,7 @@ export default function SettingsScreen() {
         <Slider
           style={{ width: 350 }}
           value={blurIntensity}
-          onValueChange={(blurValue) => {
-            setBlurIntensity(blurValue);
-            setItem("blurIntensity", blurValue);
-          }}
+          onValueChange={(blurValue) => setBlurIntensity(blurValue)}
           minimumValue={0}
           maximumValue={30}
           thumbTintColor={colorScheme === "dark" ? "#FFFFFF" : "#000000"}
@@ -109,7 +110,7 @@ export default function SettingsScreen() {
           className="flex flex-row w-5/6 h-14 px-6 items-center justify-between bg-white dark:bg-neutral-900 rounded-xl"
         >
           <Text className="text-dark font-mono dark:text-white">
-            beta v1.2.4
+            beta v{version}
           </Text>
           <Text className="text-dark font-mono_bold dark:text-white">
             @2024 by Teczer

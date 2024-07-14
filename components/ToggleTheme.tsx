@@ -2,14 +2,14 @@ import { Pressable, Text, View } from "react-native";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { setItem } from "../lib/AsyncStorage";
 import { capitalizeFirstLetter } from "../lib/utils";
+import { storage } from "../lib/mmkv";
 
 import { ColorSchemeSystem } from "nativewind/dist/style-sheet/color-scheme";
 
 interface Props {
-  theme: AppTheme;
-  colorScheme: DeviceTheme;
+  theme: "light" | "dark";
+  colorScheme: ColorSchemeSystem;
   setColorScheme: (colorSchemeSystem: ColorSchemeSystem) => void;
 }
 
@@ -42,7 +42,7 @@ export default function ToggleTheme({
       }}
       onPress={async () => {
         setColorScheme(theme as "light" | "dark" | "system");
-        await setItem("app-theme", theme);
+        storage.set("app-theme", theme);
       }}
     >
       <View

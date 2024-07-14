@@ -1,4 +1,10 @@
 import { useEffect, useRef } from "react";
+
+import { captureRef } from "react-native-view-shot";
+import { CameraRoll } from "@react-native-camera-roll/camera-roll";
+import Share from "react-native-share";
+
+import { ScrollView } from "react-native-gesture-handler";
 import {
   Image,
   StatusBar,
@@ -10,13 +16,8 @@ import {
   Platform,
   BackHandler,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import CustomSafeArea from "../components/CustomSafeArea";
 import { Entypo } from "@expo/vector-icons";
-import { captureRef } from "react-native-view-shot";
-import { useCustomBlurIntensity } from "../store/useCustomBlurPreference";
-import { CameraRoll } from "@react-native-camera-roll/camera-roll";
-import Share from "react-native-share";
+import CustomSafeArea from "../components/CustomSafeArea";
 
 interface ParamsProps {
   songRanking: any[];
@@ -29,7 +30,6 @@ interface ParamsProps {
 
 export default function RankScreen({ route, navigation }: NavigationProps) {
   const { songRanking, albumInfos }: ParamsProps = route.params;
-  const { blurIntensity } = useCustomBlurIntensity();
   const viewRef = useRef(null);
 
   const getPermissionAndroid = async () => {
@@ -139,7 +139,7 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
       {/* BACKGROUND IMAGE */}
       <Image
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
-        blurRadius={blurIntensity}
+        blurRadius={25}
         source={{ uri: albumInfos.albumCover }}
       />
       {/* CARD VIEW */}

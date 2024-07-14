@@ -28,7 +28,7 @@ export default function SettingsScreen() {
   const fallBackImage =
     colorScheme === "light"
       ? "https://img.freepik.com/free-vector/winter-blue-pink-gradient-background-vector_53876-117275.jpg"
-      : "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/e7/3b/e3/e73be310-12b8-f792-8d4b-29208eb38051/196871724647.jpg/1200x1200bb.jpg";
+      : "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/f0/39/e8/f039e88b-ed90-c43d-f4d2-1248850c8ebf/196589980014.jpg/1200x1200bb.jpg";
 
   return (
     <CustomSafeArea className="flex flex-col flex-1 items-center justify-start pt-10">

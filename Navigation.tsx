@@ -6,7 +6,9 @@ import HomeScreen from "./screens/HomeScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import VersusScreen from "./screens/VersusScreen";
 import RankScreen from "./screens/RankScreen";
+import UserStoredRankScreen from "./screens/UserStoredRankScreen";
 
+import { FontAwesome6 } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
 import { Platform, StyleSheet } from "react-native";
@@ -77,6 +79,22 @@ function MainTabs() {
           tabBarIcon: ({ focused }) => (
             <Entypo
               name="home"
+              size={24}
+              color={
+                focused ? (colorScheme === "light" ? "#000" : "#fff") : "#999"
+              }
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Rankings"
+        component={UserStoredRankScreen}
+        options={{
+          tabBarLabel: "Rankings",
+          tabBarIcon: ({ focused }) => (
+            <FontAwesome6
+              name="ranking-star"
               size={24}
               color={
                 focused ? (colorScheme === "light" ? "#000" : "#fff") : "#999"

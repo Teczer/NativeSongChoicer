@@ -21,7 +21,7 @@
         "backgroundColor": "#191414"
       },
       "package": "com.teczer.myapp",
-      "versionCode": 37
+      "versionCode": 39
     },
     "web": {
       "favicon": "./assets/favicon.png"

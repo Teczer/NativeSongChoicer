@@ -58,6 +58,7 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
     albumName: results?.name,
     albumArtist: results?.artists[0].name,
     albumCover: results?.images[0]?.url,
+    albumId: albumId,
   };
 
   const [songs, setSongs] = useState<Song[]>([]);

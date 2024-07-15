@@ -18,18 +18,20 @@ import {
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import CustomSafeArea from "../components/CustomSafeArea";
-
+import { storage } from "../lib/mmkv";
 interface ParamsProps {
   songRanking: any[];
   albumInfos: {
     albumName: string;
     albumArtist: string;
     albumCover: string;
+    albumId: string;
   };
+  rankingView?: boolean;
 }
 
 export default function RankScreen({ route, navigation }: NavigationProps) {
-  const { songRanking, albumInfos }: ParamsProps = route.params;
+  const { songRanking, albumInfos, rankingView }: ParamsProps = route.params;
   const viewRef = useRef(null);
 
   const getPermissionAndroid = async () => {
@@ -109,8 +111,8 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
     }
   };
 
-  // Prevent back button on Android to Home instead of back to previous screen
-  if (Platform.OS === "android") {
+  // Prevent back button on Android to Home instead of back to previous screen only if the user is not coming from the ranking view
+  if (Platform.OS === "android" && !rankingView) {
     useEffect(() => {
       const backAction = () => {
         navigation.navigate("Home");
@@ -125,6 +127,34 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
       return () => backHandler.remove();
     }, []);
   }
+
+  // useEffect for saving the current ranking in MMKV storage
+  useEffect(() => {
+    // Do not save the ranking if the users comes from the ranking view
+    if (rankingView) return;
+    // Retrieve existing data from MMKV
+    let storedRankings = storage.getString("song-ranking");
+    let albums = [];
+
+    if (storedRankings) {
+      albums = JSON.parse(storedRankings);
+    }
+
+    // Add new album ranking
+    let newAlbum = {
+      albumName: albumInfos.albumName,
+      albumArtist: albumInfos.albumArtist,
+      albumCover: albumInfos.albumCover,
+      albumId: albumInfos.albumId,
+      songRanking: songRanking,
+      createdAt: new Date().toISOString(),
+    };
+
+    albums.push(newAlbum);
+
+    // Update the 'song-ranking' key in MMKV
+    storage.set("song-ranking", JSON.stringify(albums));
+  }, [songRanking, albumInfos]);
 
   return (
     <CustomSafeArea
@@ -169,7 +199,7 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
               resizeMode: "cover",
               borderRadius: 20,
               borderWidth: 1,
-              borderColor: "rgba(255, 255, 255, 0.2)",
+              borderColor: "rgba(255, 255, 255, 0.1)",
             }}
           />
           {/* BLANK SPACE */}
@@ -208,7 +238,7 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
               return (
                 <Text
                   key={index}
-                  className="text-white font-mono_bold text-lg mb-2 px-4"
+                  className="text-white font-mono_bold text-base mb-2 px-4"
                   style={{
                     width: widthPercentage,
                     paddingTop: 6,
@@ -217,7 +247,7 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
                     backgroundColor: "rgba(0, 0, 0, 0.4)",
                     letterSpacing: 2,
                     borderWidth: 1,
-                    borderColor: "rgba(255, 255, 255, 0.2)",
+                    borderColor: "rgba(255, 255, 255, 0.1)",
                   }}
                 >
                   {index + 1}. {song.title}
@@ -233,7 +263,7 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
                   backgroundColor: "rgba(0, 0, 0, 0.4)",
                   letterSpacing: 2,
                   borderWidth: 1,
-                  borderColor: "rgba(255, 255, 255, 0.2)",
+                  borderColor: "rgba(255, 255, 255, 0.1)",
                 }}
               >
                 songchoicer.com
@@ -245,7 +275,7 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
       {/* BUTTONS */}
       <View
         className="w-full h-[8%] flex-row items-center justify-center py-1"
-        style={{ gap: 10 }}
+        style={{ gap: 30 }}
       >
         {/* DOWNLOAD / SHARE BUTTON */}
         <View

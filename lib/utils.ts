@@ -31,3 +31,24 @@ export const formattedDuels = (duels: Versus[]) =>
     acc[`Duel ${index + 1}`] = `${duel[0].title} | ${duel[1].title}`;
     return acc;
   }, {} as Record<string, string>);
+
+// used for format date in the rankings screen
+export function formatDate(dateString: string): string {
+  const currentDate = new Date();
+  const createdAtDate = new Date(dateString);
+  const diffTime = Math.abs(currentDate.getTime() - createdAtDate.getTime());
+  const diffMinutes = Math.ceil(diffTime / (1000 * 60));
+
+  if (diffMinutes < 60) {
+    return `${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
+  } else if (diffMinutes < 1440) {
+    const diffHours = Math.ceil(diffMinutes / 60);
+    return `${diffHours} heure${diffHours > 1 ? "s" : ""} ago`;
+  } else if (diffMinutes < 43200) {
+    const diffDays = Math.ceil(diffMinutes / 1440);
+    return `${diffDays} jour${diffDays > 1 ? "s" : ""} ago`;
+  } else {
+    const diffMonths = Math.ceil(diffMinutes / 43200);
+    return `${diffMonths} mois${diffMonths > 1 ? "s" : ""} ago`;
+  }
+}

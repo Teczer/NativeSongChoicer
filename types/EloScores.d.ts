@@ -1,5 +1,11 @@
-type EloScores = Record<number, number>
+type EloScores = Record<number, number>;
 interface SongWithEloScore {
-  song: Song
-  eloScore: number
+  song: Song;
+  eloScore: number;
 }
+
+interface SongRankInfo {
+  eloScore: number;
+  title: string;
+}
+[];

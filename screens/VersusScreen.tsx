@@ -2,14 +2,14 @@ import { useEffect, useRef, useState } from "react";
 
 import { useQuery } from "react-query";
 
-import { fetchAlbumById } from "../services/SpotifyServices";
+import { fetchAlbumById } from "@/services/SpotifyServices";
 
-import { generateDuels } from "../lib/duels";
+import { generateDuels } from "@/lib/duels";
 import {
   calculateNewEloScore,
   revertEloScore,
-} from "../lib/calculate-elo-score";
-import { textShadow } from "../lib/styles";
+} from "@/lib/calculate-elo-score";
+import { textShadow } from "@/lib/styles";
 
 import {
   Image,
@@ -19,11 +19,11 @@ import {
   Dimensions,
   Animated,
 } from "react-native";
-import CustomSafeArea from "../components/CustomSafeArea";
-import VersusScreenSkeleton from "../components/VersusScreenSkeleton";
-import BackButton from "../components/BackButton";
-import UndoButton from "../components/UndoButton";
-import VoteButton from "../components/VoteButton";
+import CustomSafeArea from "@/components/CustomSafeArea";
+import VersusScreenSkeleton from "@/components/SkeletonsScreens/VersusScreenSkeleton";
+import BackButton from "@/components/Buttons/BackButton";
+import UndoButton from "@/components/Buttons/UndoButton";
+import VoteButton from "@/components/Buttons/VoteButton";
 
 export default function VersusScreen({ route, navigation }: NavigationProps) {
   const { albumId, albumCover } = route.params;
@@ -50,6 +50,7 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
       setSongsEloScores(
         Object.fromEntries(songsToDuels.map((song) => [song.id, 1000]))
       );
+      startVoteAnimation();
       return response;
     },
   });
@@ -94,7 +95,6 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
     ]);
     const nextDuelIndex = currentDuelIndex + 1;
     setCurrentDuelIndex(nextDuelIndex);
-
     // Vérifier si le classement est terminé et rediriger si nécessaire
     if (nextDuelIndex >= duels.length) {
       const songsWithEloScores = songs.map((song) => ({
@@ -109,6 +109,7 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
         albumInfos: albumInfos,
       });
     }
+    startVoteAnimation();
   };
 
   const handleUndo = () => {
@@ -150,7 +151,7 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
     new Animated.Value(Dimensions.get("window").width)
   ).current;
 
-  const startAnimations = () => {
+  function startVoteAnimation() {
     translateXSongA.setValue(-Dimensions.get("window").width);
     translateXSongB.setValue(Dimensions.get("window").width);
     Animated.parallel([
@@ -165,11 +166,7 @@ export default function VersusScreen({ route, navigation }: NavigationProps) {
         useNativeDriver: true,
       }),
     ]).start();
-  };
-
-  useEffect(() => {
-    startAnimations();
-  }, [currentDuelIndex]);
+  }
 
   if (isLoading) {
     return <VersusScreenSkeleton albumCover={albumCover} />;

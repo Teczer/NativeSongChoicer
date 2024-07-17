@@ -4,12 +4,13 @@ import { captureRef } from "react-native-view-shot";
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 import Share from "react-native-share";
 
+import { storage } from "@/lib/mmkv";
+
 import { ScrollView } from "react-native-gesture-handler";
 import {
   Image,
   StatusBar,
   Text,
-  TouchableOpacity,
   View,
   Alert,
   PermissionsAndroid,
@@ -17,10 +18,12 @@ import {
   BackHandler,
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
-import CustomSafeArea from "../components/CustomSafeArea";
-import { storage } from "../lib/mmkv";
+import CustomSafeArea from "@/components/CustomSafeArea";
+import RankCardButton from "@/components/Buttons/RankCardButton";
+import RankAlbumCard from "@/components/ui/RankAlbumCard";
+
 interface ParamsProps {
-  songRanking: any[];
+  songRanking: SongRankInfo[];
   albumInfos: {
     albumName: string;
     albumArtist: string;
@@ -34,7 +37,7 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
   const { songRanking, albumInfos, rankingView }: ParamsProps = route.params;
   const viewRef = useRef(null);
 
-  const getPermissionAndroid = async () => {
+  async function getPermissionAndroid() {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
@@ -57,9 +60,9 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
     } catch (err) {
       console.log("err", err);
     }
-  };
+  }
 
-  const downloadImage = async () => {
+  async function downloadImage() {
     try {
       const uri = await captureRef(viewRef, {
         format: "png",
@@ -85,9 +88,9 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
     } catch (error) {
       console.log("error", error);
     }
-  };
+  }
 
-  const shareImage = async () => {
+  async function shareImage() {
     try {
       const uri = await captureRef(viewRef, {
         format: "png",
@@ -109,7 +112,7 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
     } catch (error) {
       console.log("error", error);
     }
-  };
+  }
 
   // Prevent back button on Android to Home instead of back to previous screen only if the user is not coming from the ranking view
   if (Platform.OS === "android" && !rankingView) {
@@ -151,7 +154,6 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
     };
 
     albums.push(newAlbum);
-
     // Update the 'song-ranking' key in MMKV
     storage.set("song-ranking", JSON.stringify(albums));
   }, [songRanking, albumInfos]);
@@ -181,96 +183,11 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
           borderRadius: 20,
         }}
       >
-        <View
-          ref={viewRef}
-          className="w-full h-full flex flex-col bg-transparent"
-          style={{
-            alignItems: "center",
-            justifyContent: "flex-start",
-            borderRadius: 20,
-          }}
-        >
-          {/* BLUR BACKGROUND IMAGE */}
-          <Image
-            blurRadius={6}
-            className="w-full h-full absolute top-0 left-0"
-            source={{ uri: albumInfos.albumCover }}
-            style={{
-              resizeMode: "cover",
-              borderRadius: 20,
-              borderWidth: 1,
-              borderColor: "rgba(255, 255, 255, 0.1)",
-            }}
-          />
-          {/* BLANK SPACE */}
-          <View className="h-10 bg-transparent"></View>
-          {/* ALBUM NAME + ARTIST */}
-          <Text
-            className="text-white font-mono_bold text-xl mb-6 px-4 py-2"
-            style={{
-              borderRadius: 5,
-              backgroundColor: "rgba(0,0,0,0.5)",
-              letterSpacing: 2,
-            }}
-          >
-            {albumInfos.albumArtist} • {albumInfos.albumName}
-          </Text>
-          <Image
-            className="mb-6"
-            source={{ uri: albumInfos.albumCover }}
-            style={{
-              width: 300,
-              height: 300,
-              resizeMode: "contain",
-              borderRadius: 20,
-            }}
-          />
-          <View className="flex flex-1 w-full flex-col px-6 pb-6">
-            {songRanking.map((song, index) => {
-              const widthPercentage =
-                index === 0
-                  ? "100%"
-                  : index === 1
-                  ? "95%"
-                  : index === 2
-                  ? "90%"
-                  : "80%";
-              return (
-                <Text
-                  key={index}
-                  className="text-white font-mono_bold text-base mb-2 px-4"
-                  style={{
-                    width: widthPercentage,
-                    paddingTop: 6,
-                    paddingBottom: 6,
-                    borderRadius: 8,
-                    backgroundColor: "rgba(0, 0, 0, 0.4)",
-                    letterSpacing: 2,
-                    borderWidth: 1,
-                    borderColor: "rgba(255, 255, 255, 0.1)",
-                  }}
-                >
-                  {index + 1}. {song.title}
-                </Text>
-              );
-            })}
-            {/* SONG CHOICER MARK */}
-            <View className="w-full flex justify-center items-center mt-4">
-              <Text
-                className="w-2/3 text-white text-center font-mono text-sm mb-2 px-4 py-1"
-                style={{
-                  borderRadius: 8,
-                  backgroundColor: "rgba(0, 0, 0, 0.4)",
-                  letterSpacing: 2,
-                  borderWidth: 1,
-                  borderColor: "rgba(255, 255, 255, 0.1)",
-                }}
-              >
-                songchoicer.com
-              </Text>
-            </View>
-          </View>
-        </View>
+        <RankAlbumCard
+          viewRef={viewRef}
+          albumInfos={albumInfos}
+          songRanking={songRanking}
+        />
       </ScrollView>
       {/* BUTTONS */}
       <View
@@ -283,33 +200,13 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
           style={{ gap: 4 }}
         >
           {/* DOWNLOAD BUTTON */}
-          <TouchableOpacity
-            className="flex h-full items-center justify-center"
-            style={{
-              width: 100,
-              borderWidth: 1,
-              borderRadius: 6,
-              borderColor: "rgba(255, 255, 255, 0.2)",
-              backgroundColor: "rgba(0, 0, 0, 0.6)",
-            }}
-            onPress={downloadImage}
-          >
+          <RankCardButton width={100} onPress={downloadImage}>
             <Text className="text-white font-bold">Download</Text>
-          </TouchableOpacity>
+          </RankCardButton>
           {/* SHARE BUTTON */}
-          <TouchableOpacity
-            className="flex h-full items-center justify-center"
-            style={{
-              width: 50,
-              borderWidth: 1,
-              borderRadius: 6,
-              borderColor: "rgba(255, 255, 255, 0.2)",
-              backgroundColor: "rgba(0, 0, 0, 0.6)",
-            }}
-            onPress={shareImage}
-          >
+          <RankCardButton width={50} onPress={shareImage}>
             <Entypo name="share" size={24} color="white" />
-          </TouchableOpacity>
+          </RankCardButton>
         </View>
         {/* SEPARATOR */}
         <View
@@ -318,19 +215,12 @@ export default function RankScreen({ route, navigation }: NavigationProps) {
         ></View>
         {/* BACK BUTTON */}
         <View className="h-3/4 flex flex-row justify-start items-center">
-          <TouchableOpacity
-            className="flex h-full items-center justify-center"
-            style={{
-              width: 120,
-              borderWidth: 1,
-              borderRadius: 6,
-              backgroundColor: "rgba(0, 0, 0, 0.6)",
-              borderColor: "rgba(255, 255, 255, 0.2)",
-            }}
+          <RankCardButton
+            width={120}
             onPress={() => navigation?.navigate("Home")}
           >
             <Text className="text-white font-bold">Back Home</Text>
-          </TouchableOpacity>
+          </RankCardButton>
         </View>
       </View>
     </CustomSafeArea>

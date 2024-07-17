@@ -3,10 +3,11 @@ import { useMemo, useState } from "react";
 import { useMMKVNumber, useMMKVString } from "react-native-mmkv";
 import { useQuery } from "react-query";
 import { useColorScheme } from "nativewind";
-import useDebounce from "../hooks/useDebounce";
+import useDebounce from "@/hooks/useDebounce";
 
-import { capitalizeFirstLetter } from "../lib/utils";
-import { fetchAlbums } from "../services/SpotifyServices";
+import { capitalizeFirstLetter } from "@/lib/utils";
+import { fallBackImage } from "@/lib/utils";
+import { fetchAlbums } from "@/services/SpotifyServices";
 
 import {
   ActivityIndicator,
@@ -14,14 +15,13 @@ import {
   ScrollView,
   StatusBar,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
-import { TextInput } from "../components/text-input";
-import CustomSafeArea from "../components/CustomSafeArea";
-import StepImage from "../components/StepImage";
-import HomeErrorScreen from "../components/HomeErrorScreen";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { TextInput } from "@/components/Inputs/text-input";
+import CustomSafeArea from "@/components/CustomSafeArea";
+import StepImage from "@/components/ui/StepImage";
+import HomeErrorScreen from "@/components/ErrorScreens/HomeErrorScreen";
+import AlbumItemResult from "@/components/ui/AlbumItemResult";
 
 export default function HomeScreen({ navigation }: NavigationProps) {
   const [blurIntensity] = useMMKVNumber("blur-intensity");
@@ -58,16 +58,11 @@ export default function HomeScreen({ navigation }: NavigationProps) {
     );
   }, [results, album]);
 
-  const fallBackImage =
-    colorScheme === "light"
-      ? "https://img.freepik.com/free-vector/winter-blue-pink-gradient-background-vector_53876-117275.jpg"
-      : "https://cdns-images.dzcdn.net/images/cover/c1739b10fb9608e7fb6830162d90c8b4/1900x1900-000000-80-0-0.jpg";
-
   if (isError) {
     return (
       <HomeErrorScreen
         queryError={queryError}
-        backgroundImage={backgroundImage || fallBackImage}
+        backgroundImage={backgroundImage || fallBackImage(colorScheme)}
         blurIntensity={blurIntensity || 25}
       />
     );
@@ -83,7 +78,7 @@ export default function HomeScreen({ navigation }: NavigationProps) {
       <Image
         className="absolute inset-0 top-0 left-0 w-full h-full scale-125 rounded-sm"
         blurRadius={blurIntensity || 25}
-        source={{ uri: backgroundImage || fallBackImage }}
+        source={{ uri: backgroundImage || fallBackImage(colorScheme) }}
       />
       {/* ARTIST INPUT */}
       <View className="w-full flex items-start justify-start gap-1">
@@ -117,56 +112,30 @@ export default function HomeScreen({ navigation }: NavigationProps) {
       </View>
       {/* STEP IMAGE */}
       {!isLoading && !filteredAlbums && <StepImage colorScheme={colorScheme} />}
-
       {/* SEARCH RESULTS */}
       <ScrollView className="flex flex-1 w-full h-full mb-16">
+        {/* LOADER SPINNER */}
         {isLoading && <ActivityIndicator size="large" color="white" />}
+        {/* ALBUM ITEMS */}
         {filteredAlbums &&
           filteredAlbums.map((album) => {
             const formattedReleaseDate = album.release_date.split("-")[0];
             const formattedAlbumType = capitalizeFirstLetter(album.type);
-
             return (
-              <TouchableOpacity
-                onPress={() => {
+              <AlbumItemResult
+                key={album.id}
+                album={album}
+                navigateFunction={() =>
                   navigation.navigate("Versus", {
                     albumId: album.id,
                     albumCover: album?.images[0]?.url,
-                  });
-                }}
-                className="flex flex-row w-full mb-4"
-                key={album.id}
-              >
-                <Image
-                  className="w-2/5 h-40"
-                  source={{ uri: album?.images[0]?.url }}
-                  borderRadius={10}
-                />
-                <View className="w-3/5 flex flex-col justify-center items-start pl-3">
-                  <TouchableOpacity
-                    className="absolute top-2 right-0 w-auto"
-                    onPress={() => setBackgroundImage(album?.images[0]?.url)}
-                  >
-                    <MaterialCommunityIcons
-                      name="image-plus"
-                      size={28}
-                      color={colorScheme === "light" ? "black" : "white"}
-                    />
-                  </TouchableOpacity>
-                  <Text
-                    className="w-full h-auto mb-1 text-start text-dark dark:text-white"
-                    style={{ fontFamily: "Geist Bold" }}
-                  >
-                    {album.name}
-                  </Text>
-                  <Text className="w-full font-regular text-dark dark:text-neutral-300 mb-1">
-                    {formattedReleaseDate} • {formattedAlbumType}
-                  </Text>
-                  <Text className="w-full text-dark font-light italic dark:text-neutral-300">
-                    {album.total_tracks} Titres
-                  </Text>
-                </View>
-              </TouchableOpacity>
+                  })
+                }
+                colorScheme={colorScheme}
+                formattedAlbumType={formattedAlbumType}
+                formattedReleaseDate={formattedReleaseDate}
+                setBackgroundImage={setBackgroundImage}
+              />
             );
           })}
       </ScrollView>

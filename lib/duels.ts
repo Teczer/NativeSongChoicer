@@ -1,9 +1,9 @@
-import { MAX_DUEL } from "../config";
+import { MAX_DUEL } from "@/config";
 import {
   findFirstDuelsOfASongWithoutAnotherSongId,
   isDuelInList,
-} from "./duel-song-search";
-import { countHowMuchTimeThisSoungAppear, shuffleArray } from "./utils";
+} from "@/lib/duel-song-search";
+import { countHowMuchTimeThisSoungAppear, shuffleArray } from "@/lib/utils";
 
 // - On part d'un tableau vide et on ajoute des duels jusqu'à atteindre le nombre max de duels
 // - Si le nombre MAX_POSSIBLE_DUEL est inférieur ou égale au nombre MAX_DUEL on renvoi directement la liste

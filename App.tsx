@@ -7,10 +7,10 @@ import { useColorScheme } from "nativewind";
 import { QueryClient, QueryClientProvider } from "react-query";
 import * as Splashscreen from "expo-splash-screen";
 
-import { storage } from "./lib/mmkv";
+import { storage } from "@/lib/mmkv";
 import { ColorSchemeSystem } from "nativewind/dist/style-sheet/color-scheme";
 
-import Navigation from "./Navigation";
+import Navigation from "@/Navigation";
 
 const queryClient = new QueryClient();
 
@@ -19,14 +19,14 @@ Splashscreen.preventAutoHideAsync();
 export default function App() {
   const { setColorScheme } = useColorScheme();
   const [loaded, error] = useFonts({
-    "Geist Mono Light": require("./assets/fonts/GeistMono-Light.ttf"),
-    "Geist Mono Bold": require("./assets/fonts/GeistMono-Bold.ttf"),
-    "Geist Mono Regular": require("./assets/fonts/GeistMono-Regular.ttf"),
-    "Geist Mono Medium": require("./assets/fonts/GeistMono-Medium.ttf"),
-    "Geist Light": require("./assets/fonts/Geist-Light.ttf"),
-    "Geist Bold": require("./assets/fonts/Geist-Bold.ttf"),
-    "Geist Regular": require("./assets/fonts/Geist-Regular.ttf"),
-    "Geist Medium": require("./assets/fonts/Geist-Medium.ttf"),
+    "Geist Mono Light": require("@/assets/fonts/GeistMono-Light.ttf"),
+    "Geist Mono Bold": require("@/assets/fonts/GeistMono-Bold.ttf"),
+    "Geist Mono Regular": require("@/assets/fonts/GeistMono-Regular.ttf"),
+    "Geist Mono Medium": require("@/assets/fonts/GeistMono-Medium.ttf"),
+    "Geist Light": require("@/assets/fonts/Geist-Light.ttf"),
+    "Geist Bold": require("@/assets/fonts/Geist-Bold.ttf"),
+    "Geist Regular": require("@/assets/fonts/Geist-Regular.ttf"),
+    "Geist Medium": require("@/assets/fonts/Geist-Medium.ttf"),
   });
 
   const userThemeData = storage.getString("app-theme");

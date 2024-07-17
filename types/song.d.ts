@@ -139,3 +139,14 @@ interface Artist {
 interface Externalurls {
   spotify: string;
 }
+
+// TYPES FOR USER RANKED ALBUMS
+
+interface UserRankedAlbums {
+  albumName: string;
+  albumArtist: string;
+  albumCover: string;
+  albumId: string;
+  songRanking: any[];
+  createdAt: string;
+}

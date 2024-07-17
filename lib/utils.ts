@@ -43,12 +43,19 @@ export function formatDate(dateString: string): string {
     return `${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
   } else if (diffMinutes < 1440) {
     const diffHours = Math.ceil(diffMinutes / 60);
-    return `${diffHours} heure${diffHours > 1 ? "s" : ""} ago`;
+    return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
   } else if (diffMinutes < 43200) {
     const diffDays = Math.ceil(diffMinutes / 1440);
-    return `${diffDays} jour${diffDays > 1 ? "s" : ""} ago`;
+    return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
   } else {
     const diffMonths = Math.ceil(diffMinutes / 43200);
-    return `${diffMonths} mois${diffMonths > 1 ? "s" : ""} ago`;
+    return `${diffMonths} month${diffMonths > 1 ? "s" : ""} ago`;
   }
+}
+
+// used for fallBackImage in screens using user backgroundImage
+export function fallBackImage(colorScheme: string) {
+  return colorScheme === "light"
+    ? "https://img.freepik.com/free-vector/winter-blue-pink-gradient-background-vector_53876-117275.jpg"
+    : "https://cdns-images.dzcdn.net/images/cover/c1739b10fb9608e7fb6830162d90c8b4/1900x1900-000000-80-0-0.jpg";
 }

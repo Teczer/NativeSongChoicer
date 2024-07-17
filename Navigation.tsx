@@ -2,11 +2,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import HomeScreen from "./screens/HomeScreen";
-import SettingsScreen from "./screens/SettingsScreen";
-import VersusScreen from "./screens/VersusScreen";
-import RankScreen from "./screens/RankScreen";
-import UserStoredRankScreen from "./screens/UserStoredRankScreen";
+import HomeScreen from "@/screens/HomeScreen";
+import SettingsScreen from "@/screens/SettingsScreen";
+import VersusScreen from "@/screens/VersusScreen";
+import RankScreen from "@/screens/RankScreen";
+import UserStoredRankScreen from "@/screens/UserStoredRankScreen";
 
 import { FontAwesome6 } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";

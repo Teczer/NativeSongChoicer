@@ -4,8 +4,8 @@ Native Song Choicer is the mobile application for the Song Choicer website.
 - Website: https://songchoicer.com/
 - Github: https://github.com/Teczer/SongChoicer
 
-| ![](https://res.cloudinary.com/dw3mwclgk/image/upload/v1720987519/screen-1_zu2w6g.jpg) | ![](https://res.cloudinary.com/dw3mwclgk/image/upload/v1720987519/screen-2_dhuog9.jpg) | ![](https://res.cloudinary.com/dw3mwclgk/image/upload/v1720987519/screen-3_mtsmnw.jpg) |
-| ------------------------------- | ----------------------------------- | ------------------------------------ |
+| ![](https://res.cloudinary.com/dw3mwclgk/image/upload/v1721238938/Screenshot_2024-07-17-19-12-34-222_com.teczer.myapp_egbqsl.jpg) | ![](https://res.cloudinary.com/dw3mwclgk/image/upload/v1720987519/screen-3_mtsmnw.jpg) | ![](https://res.cloudinary.com/dw3mwclgk/image/upload/v1721238938/Screenshot_2024-07-17-19-23-11-543_com.teczer.myapp_lzxmvs.jpg) | ![](https://res.cloudinary.com/dw3mwclgk/image/upload/v1721238937/Screenshot_2024-07-17-19-12-02-050_com.teczer.myapp_rmyfaz.jpg)
+| ------------------------------- | ----------------------------------- | ------------------------------------ | ------------------------------------ |
 
 ## Development
 The application uses Expo, so you don't need to install an Android or iOS environment. Just install the Expo Go app on your phone.

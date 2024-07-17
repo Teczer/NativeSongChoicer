@@ -27,12 +27,18 @@ The application uses Expo, so you don't need to install an Android or iOS enviro
    ```
 
 ## TODO
+### V1
 - [x] Home Page
 - [x] Search Query
 - [x] Settings Page
 - [x] Versus Screen
 - [x] Rank Screen
-- [ ] Users Saved Rankings Screen
+- [x] Users Saved Rankings Screen
+### V2
+- [ ] Authentification
+- [ ] Signup Screen 
+- [ ] Login Screen 
+- [ ] Link data to users logs 
 
 ## Related Links
 - [Figma Designs](https://www.figma.com/design/uFFGo34UwNxmp9UlusClCb/%F0%9F%8E%B5-Song-Choicer?node-id=0-1&t=yQHqwoEN8vOs9gZy-1)
